@@ -1,6 +1,5 @@
 package br.com.loja.virtual.mentoria.model;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -10,18 +9,25 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+
 @Entity
-@Table(name = "marca_produto")
-@SequenceGenerator(name = "marca_produto_seq", sequenceName = "marca_produto_seq", allocationSize = 1, initialValue = 1)
-public class MarcaProduto implements Serializable {
+@Table(name = "acesso")
+@SequenceGenerator(name = "acesso_seq", sequenceName = "acesso_seq", allocationSize = 1, initialValue = 1)
+public class Acesso implements GrantedAuthority {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "marca_produto_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "acesso_seq")
 	private Long id;
 
-	private String nome;
+	private String descricao; // ROLE_ADMIN ou ROLE_SECRETARIO
+
+	@Override
+	public String getAuthority() { // Retorna o acesso por padrão
+		return this.descricao;
+	}
 
 	public Long getId() {
 		return id;
@@ -31,12 +37,12 @@ public class MarcaProduto implements Serializable {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 
 	@Override
@@ -52,7 +58,7 @@ public class MarcaProduto implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MarcaProduto other = (MarcaProduto) obj;
+		Acesso other = (Acesso) obj;
 		return Objects.equals(id, other.id);
 	}
 

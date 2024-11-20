@@ -1,0 +1,87 @@
+package br.com.loja.virtual.mentoria.model;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import javax.persistence.ConstraintMode;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "nota_item_produto")
+@SequenceGenerator(name = "nota_item_produto_seq", sequenceName = "nota_item_produto_seq", allocationSize = 1, initialValue = 1)
+public class NotaItemProduto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nota_item_produto_seq")
+	private Long id;
+
+	@ManyToOne
+	@JoinColumn(name = "nota_fiscal_compra_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "nota_fiscal_compra_fk"))
+	private NotaFiscalCompra notaFiscalCompra;
+
+	@ManyToOne
+	@JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
+	private Produto produto;
+
+	private Double qtd;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public NotaFiscalCompra getNotaFiscalCompra() {
+		return notaFiscalCompra;
+	}
+
+	public void setNotaFiscalCompra(NotaFiscalCompra notaFiscalCompra) {
+		this.notaFiscalCompra = notaFiscalCompra;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	public Double getQtd() {
+		return qtd;
+	}
+
+	public void setQtd(Double qtd) {
+		this.qtd = qtd;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NotaItemProduto other = (NotaItemProduto) obj;
+		return Objects.equals(id, other.id);
+	}
+
+}

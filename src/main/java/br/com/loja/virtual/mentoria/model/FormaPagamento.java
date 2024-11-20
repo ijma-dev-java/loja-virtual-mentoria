@@ -11,14 +11,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "categoria_produto")
-@SequenceGenerator(name = "categoria_produto_seq", sequenceName = "categoria_produto_seq", allocationSize = 1, initialValue = 1)
-public class CategoriaProduto implements Serializable {
+@Table(name = "forma_pagamento")
+@SequenceGenerator(name = "forma_pagamento_seq", sequenceName = "forma_pagamento_seq", allocationSize = 1, initialValue = 1)
+public class FormaPagamento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categoria_produto_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "forma_pagamento_seq")
 	private Long id;
 
 	private String descricao;
@@ -52,7 +52,7 @@ public class CategoriaProduto implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		CategoriaProduto other = (CategoriaProduto) obj;
+		FormaPagamento other = (FormaPagamento) obj;
 		return Objects.equals(id, other.id);
 	}
 

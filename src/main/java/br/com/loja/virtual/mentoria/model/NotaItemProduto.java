@@ -3,6 +3,7 @@ package br.com.loja.virtual.mentoria.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -32,7 +33,8 @@ public class NotaItemProduto implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
 	private Produto produto;
-
+	
+	@Column(nullable = false)
 	private Double qtd;
 
 	public Long getId() {

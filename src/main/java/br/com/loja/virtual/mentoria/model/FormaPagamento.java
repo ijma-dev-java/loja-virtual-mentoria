@@ -3,6 +3,7 @@ package br.com.loja.virtual.mentoria.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,7 +21,8 @@ public class FormaPagamento implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "forma_pagamento_seq")
 	private Long id;
-
+	
+	@Column(nullable = false)
 	private String descricao;
 
 	public Long getId() {

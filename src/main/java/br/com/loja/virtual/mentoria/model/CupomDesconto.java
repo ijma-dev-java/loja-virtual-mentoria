@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,13 +25,15 @@ public class CupomDesconto implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cupom_desconto_seq")
 	private Long id;
-
+	
+	@Column(nullable = false)
 	private String codigoDescricao;
-
+	
 	private BigDecimal valorRealDesconto;
 
 	private BigDecimal valorPorcentagemDesconto;
-
+	
+	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataValidadeCupom;
 

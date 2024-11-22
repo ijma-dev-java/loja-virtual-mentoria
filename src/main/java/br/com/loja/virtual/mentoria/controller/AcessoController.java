@@ -1,8 +1,13 @@
 package br.com.loja.virtual.mentoria.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,7 +22,7 @@ public class AcessoController {
 
 	@Autowired
 	private AcessoService acessoService;
-	
+
 	@Autowired
 	private AcessoRepository acessoRepository;
 
@@ -32,7 +37,7 @@ public class AcessoController {
 		return new ResponseEntity<Acesso>(acessoSalvo, HttpStatus.OK);
 
 	}
-	
+
 	@ResponseBody
 	@PostMapping(value = "**/deleteAcesso")
 	public ResponseEntity<?> deleteAcesso(@RequestBody Acesso acesso) {
@@ -42,6 +47,42 @@ public class AcessoController {
 
 		// Retorna a mensagem do objeto deletado
 		return new ResponseEntity("Acesso removido", HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@DeleteMapping(value = "**/deleteAcessoPorId/{id}")
+	public ResponseEntity<?> deleteAcessoPorId(@PathVariable("id") Long id) {
+
+		// Deleta do banco de dados por ID
+		acessoRepository.deleteById(id);
+
+		// Retorna a mensagem do objeto deletado
+		return new ResponseEntity("Acesso removido", HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "**/obterAcessoPorId/{id}")
+	public ResponseEntity<Acesso> obterAcessoPorId(@PathVariable("id") Long id) {
+
+		// Buscar do banco de dados por ID
+		Acesso acesso = acessoRepository.findById(id).get();
+
+		// Retorna a consulta do objeto
+		return new ResponseEntity<Acesso>(acesso, HttpStatus.OK);
+
+	}
+	
+	@ResponseBody
+	@GetMapping(value = "**/obterAcessoPorDescricao/{descricao}")
+	public ResponseEntity<List<Acesso>> obterAcessoPorDescricao(@PathVariable("descricao") String descricao) {
+
+		// Buscar do banco de dados por descricao
+		List<Acesso> acessos = acessoRepository.buscarAcessoByDescricao(descricao);
+
+		// Retorna a consulta do objeto
+		return new ResponseEntity<List<Acesso>>(acessos, HttpStatus.OK);
 
 	}
 

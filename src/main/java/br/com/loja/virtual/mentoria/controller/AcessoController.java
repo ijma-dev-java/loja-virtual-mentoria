@@ -1,23 +1,47 @@
 package br.com.loja.virtual.mentoria.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.model.Acesso;
+import br.com.loja.virtual.mentoria.repository.AcessoRepository;
 import br.com.loja.virtual.mentoria.service.AcessoService;
 
-@Controller
+@RestController
 public class AcessoController {
 
 	@Autowired
 	private AcessoService acessoService;
+	
+	@Autowired
+	private AcessoRepository acessoRepository;
 
+	@ResponseBody
 	@PostMapping(value = "**/salvarAcesso")
-	public Acesso salvarAcesso(Acesso acesso) {
-		
+	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) {
+
 		// Chama a classe de serviço
-		return acessoService.salvarAcesso(acesso);
+		Acesso acessoSalvo = acessoService.salvarAcesso(acesso);
+
+		// Retorna o objeto salvo
+		return new ResponseEntity<Acesso>(acessoSalvo, HttpStatus.OK);
+
+	}
+	
+	@ResponseBody
+	@PostMapping(value = "**/deleteAcesso")
+	public ResponseEntity<?> deleteAcesso(@RequestBody Acesso acesso) {
+
+		// Deleta do banco de dados
+		acessoRepository.deleteById(acesso.getId());
+
+		// Retorna a mensagem do objeto deletado
+		return new ResponseEntity("Acesso removido", HttpStatus.OK);
 
 	}
 

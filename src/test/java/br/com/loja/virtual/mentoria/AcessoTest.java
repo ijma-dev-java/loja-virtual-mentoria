@@ -302,7 +302,7 @@ public class AcessoTest extends TestCase {
 	/* ====  testeSalvarAcesso com Junit ==== */
 
 	@Test
-	public void testeSalvarAcessoJunit() {
+	public void testeSalvarAcessoJunit() throws LojaVirtualMentoriaException {
 
 		// Instância do objeto
 		Acesso acesso = new Acesso();

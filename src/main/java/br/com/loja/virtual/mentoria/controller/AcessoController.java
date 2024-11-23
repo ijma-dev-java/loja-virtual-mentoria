@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
 import br.com.loja.virtual.mentoria.model.Acesso;
 import br.com.loja.virtual.mentoria.repository.AcessoRepository;
 import br.com.loja.virtual.mentoria.service.AcessoService;
@@ -30,7 +31,23 @@ public class AcessoController {
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarAcesso")
-	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) {
+	public ResponseEntity<Acesso> salvarAcesso(@RequestBody Acesso acesso) throws LojaVirtualMentoriaException {
+
+		// Validando se o ID é null
+		if (acesso.getId() == null) {
+
+			// Consultar no banco de dados se já existe acesso com a mesma descrição
+			List<Acesso> acessos = acessoRepository.buscarAcessoByDescricao(acesso.getDescricao().toUpperCase().trim());
+
+			// Se encontrar no banco de dados acesso com a mesma descrição
+			if (!acessos.isEmpty()) {
+
+				// Mostra mensagem para o cliente
+				throw new LojaVirtualMentoriaException("Já existe acesso com a descrição: " + acesso.getDescricao());
+
+			}
+
+		}
 
 		// Chama a classe de serviço
 		Acesso acessoSalvo = acessoService.salvarAcesso(acesso);
@@ -68,10 +85,19 @@ public class AcessoController {
 
 	@ResponseBody
 	@GetMapping(value = "**/obterAcessoPorId/{id}")
-	public ResponseEntity<Acesso> obterAcessoPorId(@PathVariable("id") Long id) {
+	public ResponseEntity<Acesso> obterAcessoPorId(@PathVariable("id") Long id) throws LojaVirtualMentoriaException {
 
 		// Buscar do banco de dados por ID
-		Acesso acesso = acessoRepository.findById(id).get();
+		// Se não encontrar retorna null para evitar exceção
+		Acesso acesso = acessoRepository.findById(id).orElse(null);
+		
+		// Se o acesso estiver null
+		if (acesso == null) {
+			
+			// Mostra a mensagem customizada de acesso não não encontrato com o ID consultado
+			throw new LojaVirtualMentoriaException("Acesso não encontrato com o ID: " + id);
+			
+		}
 
 		// Retorna a consulta do objeto
 		return new ResponseEntity<Acesso>(acesso, HttpStatus.OK);

@@ -50,6 +50,8 @@ public class AcessoController {
 
 	}
 
+	// @CrossOrigin(origins = { "www.ijma.com.br" })
+	// @Secured({ "ROLE_ADMIN", "ROLE_GERENTE" }) - Permissão de acesso
 	@ResponseBody
 	@DeleteMapping(value = "**/deleteAcessoPorId/{id}")
 	public ResponseEntity<?> deleteAcessoPorId(@PathVariable("id") Long id) {
@@ -73,13 +75,13 @@ public class AcessoController {
 		return new ResponseEntity<Acesso>(acesso, HttpStatus.OK);
 
 	}
-	
+
 	@ResponseBody
 	@GetMapping(value = "**/obterAcessoPorDescricao/{descricao}")
 	public ResponseEntity<List<Acesso>> obterAcessoPorDescricao(@PathVariable("descricao") String descricao) {
 
 		// Buscar do banco de dados por descricao
-		List<Acesso> acessos = acessoRepository.buscarAcessoByDescricao(descricao);
+		List<Acesso> acessos = acessoRepository.buscarAcessoByDescricao(descricao.toUpperCase().trim());
 
 		// Retorna a consulta do objeto
 		return new ResponseEntity<List<Acesso>>(acessos, HttpStatus.OK);

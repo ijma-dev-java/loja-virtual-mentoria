@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "pessoa_juridica")
 @PrimaryKeyJoinColumn(name = "id")
-public abstract class PessoaJuridica extends Pessoa {
+public class PessoaJuridica extends Pessoa {
 
 	private static final long serialVersionUID = 1L;
 	

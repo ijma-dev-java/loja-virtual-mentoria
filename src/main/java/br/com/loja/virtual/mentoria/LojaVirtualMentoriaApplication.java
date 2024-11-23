@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class LojaVirtualMentoriaApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(LojaVirtualMentoriaApplication.class, args);
+
 	}
 
 }

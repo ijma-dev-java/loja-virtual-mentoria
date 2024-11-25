@@ -26,6 +26,17 @@ public class PessoaUsuarioService {
 
 	public PessoaJuridica salvarPessoaJuridica(PessoaJuridica pessoaJuridica) {
 
+		// Varrendo a lista de endereços e associando
+		for (int i = 0; i < pessoaJuridica.getEnderecos().size(); i++) {
+
+			// Pega os endereços da pessoa cadastrada
+			pessoaJuridica.getEnderecos().get(i).setPessoa(pessoaJuridica);
+
+			// Pega os endereços da empresa cadastrada
+			pessoaJuridica.getEnderecos().get(i).setEmpresa(pessoaJuridica);
+
+		}
+
 		// Salva a pessoaJuridica no banco de dados
 		pessoaJuridica = pessoaJuridicaRepository.save(pessoaJuridica);
 
@@ -39,7 +50,7 @@ public class PessoaUsuarioService {
 			// Validando que a consultar da constraint desnecessária existe
 			if (constraint != null) {
 				// Remove a constraint desnecessária utilizando jdbcTemplate do spring
-				jdbcTemplate.execute("begin; alter table usuario_acesso drop constraint "+ constraint +"; commit");
+				jdbcTemplate.execute("begin; alter table usuario_acesso drop constraint " + constraint + "; commit");
 			}
 
 			// Instância do novo usuário
@@ -65,6 +76,8 @@ public class PessoaUsuarioService {
 
 			// Inserindo acesso para usuário pessoaJuridica por ID
 			usuarioRepository.insertAcessoUsuarioPjPorId(usuarioPj.getId());
+
+			// Fazer o login de e-mail com o login e senha
 
 		}
 

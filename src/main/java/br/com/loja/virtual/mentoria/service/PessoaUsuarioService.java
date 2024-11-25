@@ -77,8 +77,11 @@ public class PessoaUsuarioService {
 			// Salva usuário no banco de dados
 			usuarioPj = usuarioRepository.save(usuarioPj);
 
-			// Inserindo acesso para usuário pessoaJuridica por ID
+			// Inserindo acesso para usuário de ROLE_USER para pessoaJuridica por ID
 			usuarioRepository.insertAcessoUsuarioPjPorId(usuarioPj.getId());
+
+			// Inserindo acesso para usuário de ROLE_ADMIN para pessoaJuridica por ID
+			usuarioRepository.insertAcessoUsuarioAdminPjPorId(usuarioPj.getId(), "ROLE_ADMIN");
 
 			// Instância do StringBuilder para escrever o e-mail
 			StringBuilder menssagemHtml = new StringBuilder();

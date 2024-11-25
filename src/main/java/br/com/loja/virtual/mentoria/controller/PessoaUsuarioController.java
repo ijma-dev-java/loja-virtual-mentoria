@@ -44,6 +44,14 @@ public class PessoaUsuarioController {
 					"Já existe CNPJ cadastrado com o número: " + pessoaJuridica.getCnpj());
 		}
 
+		// Validando se a pessoaJuridica está com o id null
+		// e se existe o IE cadastrado
+		if (pessoaJuridica.getId() == null && pessoaJuridicaRepository
+				.buscarInscricaoEstadualCadastrado(pessoaJuridica.getInscricaoEstadual()) != null) {
+			throw new LojaVirtualMentoriaException(
+					"Já existe Inscrição estadual cadastrado com o número: " + pessoaJuridica.getInscricaoEstadual());
+		}
+
 		// Chamando o PessoaUsuarioService
 		pessoaJuridica = pessoaUsuarioService.salvarPessoaJuridica(pessoaJuridica);
 

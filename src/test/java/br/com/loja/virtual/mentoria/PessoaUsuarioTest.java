@@ -73,7 +73,23 @@ public class PessoaUsuarioTest extends TestCase {
 		pessoaJuridica.getEnderecos().add(enderecoEntrega);
 
 		// Chamando o pessoaController
-		pessoaController.salvarPessoaJuridica(pessoaJuridica);
+		pessoaJuridica = pessoaController.salvarPessoaJuridica(pessoaJuridica).getBody();
+		
+		// Validando se o ID é maior que ZERO após salvar
+		// com os dados de endereços
+		assertEquals(true, pessoaJuridica.getId() > 0);
+		
+		// Varrendo a lista de endereços
+		for (Endereco endereco : pessoaJuridica.getEnderecos()) {
+			
+			// Validando se foi gerando ID para endereços
+			assertEquals(true, endereco.getId() > 0);
+			
+		}
+		
+		// Validando se cadastros os endereços:
+		// Endereço de cobrança e de entrega
+		assertEquals(2, pessoaJuridica.getEnderecos().size());
 
 	}
 

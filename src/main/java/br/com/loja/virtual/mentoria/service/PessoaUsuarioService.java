@@ -24,6 +24,9 @@ public class PessoaUsuarioService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	@Autowired
+	private ServiceSendEmail serviceSendEmail;
+
 	public PessoaJuridica salvarPessoaJuridica(PessoaJuridica pessoaJuridica) {
 
 		// Varrendo a lista de endereços e associando
@@ -77,7 +80,30 @@ public class PessoaUsuarioService {
 			// Inserindo acesso para usuário pessoaJuridica por ID
 			usuarioRepository.insertAcessoUsuarioPjPorId(usuarioPj.getId());
 
-			// Fazer o login de e-mail com o login e senha
+			// Instância do StringBuilder para escrever o e-mail
+			StringBuilder menssagemHtml = new StringBuilder();
+
+			// Escrevendo a mensagem
+			menssagemHtml.append("<b>Segue abaixo seus dados de acesso para a loja virtual</b><br /><br />");
+			menssagemHtml.append("<b>Login: </b>" + pessoaJuridica.getEmail() + "<br /><br />");
+			menssagemHtml.append("<b>Senha: </b>" + (senha) + "<br /><br />");
+			menssagemHtml.append("<hr />");
+			menssagemHtml.append("<br />");
+			menssagemHtml.append("<b>Atenciosamente, Ítalo Araújo (81) 9 9624-5416</b>");
+
+			try {
+
+				// Chama o ServiceSendEmail passando:
+				// o assunto, a mensagem e o e-mail de destino
+				serviceSendEmail.enviarEmailHtml("Acesso gerado para loja virtual", menssagemHtml.toString(),
+						pessoaJuridica.getEmail());
+
+			} catch (Exception e) {
+
+				// Mostra erro no console
+				e.printStackTrace();
+
+			}
 
 		}
 

@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
+import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
+import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.service.PessoaUsuarioService;
+import br.com.loja.virtual.mentoria.util.ValidaCNPJ;
+import br.com.loja.virtual.mentoria.util.ValidaCPF;
 
 @RestController
 @Controller
@@ -23,6 +27,9 @@ public class PessoaUsuarioController {
 
 	@Autowired
 	private PessoaUsuarioService pessoaUsuarioService;
+
+	@Autowired
+	private PessoaFisicaRepository pessoaFisicaRepository;
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarPessoaJuridica")
@@ -48,8 +55,15 @@ public class PessoaUsuarioController {
 		// e se existe o IE cadastrado
 		if (pessoaJuridica.getId() == null && pessoaJuridicaRepository
 				.buscarInscricaoEstadualCadastrado(pessoaJuridica.getInscricaoEstadual()) != null) {
+			// Mostrando a mensagem que já existe IE cadastrado
 			throw new LojaVirtualMentoriaException(
 					"Já existe Inscrição estadual cadastrado com o número: " + pessoaJuridica.getInscricaoEstadual());
+		}
+
+		// Validando se o CNPJ é válido
+		if (!ValidaCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
+			// Mostrando a mensagem que CNPJ não é válido
+			throw new LojaVirtualMentoriaException("CNPJ: " + pessoaJuridica.getCnpj() + " está inválido");
 		}
 
 		// Chamando o PessoaUsuarioService
@@ -57,6 +71,38 @@ public class PessoaUsuarioController {
 
 		// Retorna pessoaJuridica salvo
 		return new ResponseEntity<PessoaJuridica>(pessoaJuridica, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@PostMapping(value = "**/salvarPessoaFisica")
+	public ResponseEntity<PessoaFisica> salvarPessoaFisica(@RequestBody PessoaFisica pessoaFisica)
+			throws LojaVirtualMentoriaException {
+
+		// Validando se a pessoaFisica está null
+		if (pessoaFisica == null) {
+			// Mostrando a mensagem que a pessoaFisica não pode ser NULL
+			throw new LojaVirtualMentoriaException("Pessoa Física não pode ser NULL");
+		}
+
+		// Validando se a pessoaFisica está com o id null
+		// e se existe o CPF cadastrado
+		if (pessoaFisica.getId() == null && pessoaFisicaRepository.buscarCpfCadastrado(pessoaFisica.getCpf()) != null) {
+			// Mostrando a mensagem que já existe CPF cadastrado
+			throw new LojaVirtualMentoriaException("Já existe CPF cadastrado com o número: " + pessoaFisica.getCpf());
+		}
+
+		// Validando se o CPF é válido
+		if (!ValidaCPF.isCPF(pessoaFisica.getCpf())) {
+			// Mostrando a mensagem que CPF não é válido
+			throw new LojaVirtualMentoriaException("CPF: " + pessoaFisica.getCpf() + " está inválido");
+		}
+
+		// Chamando o PessoaUsuarioService
+		pessoaFisica = pessoaUsuarioService.salvarPessoaFisica(pessoaFisica);
+
+		// Retorna pessoaJuridica salvo
+		return new ResponseEntity<PessoaFisica>(pessoaFisica, HttpStatus.OK);
 
 	}
 

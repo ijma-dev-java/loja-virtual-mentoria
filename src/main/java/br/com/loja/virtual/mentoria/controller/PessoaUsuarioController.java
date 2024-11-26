@@ -1,5 +1,7 @@
 package br.com.loja.virtual.mentoria.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +35,17 @@ public class PessoaUsuarioController {
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarPessoaJuridica")
-	public ResponseEntity<PessoaJuridica> salvarPessoaJuridica(@RequestBody PessoaJuridica pessoaJuridica)
+	public ResponseEntity<PessoaJuridica> salvarPessoaJuridica(@RequestBody @Valid PessoaJuridica pessoaJuridica)
 			throws LojaVirtualMentoriaException {
+
+		// Validando se a pessoaJuridica está null ou vazio - FORMA ANTIGA
+		/*
+		 * if (pessoaJuridica.getNome() == null ||
+		 * pessoaJuridica.getNome().trim().isEmpty()) { // Mostrando a mensagem que a
+		 * pessoaJuridica não pode ser NULL nem vazio throw new
+		 * LojaVirtualMentoriaException("Informe o nome da pessoa jurídica"); }
+		 * 
+		 */
 
 		// Validando se a pessoaJuridica está null
 		if (pessoaJuridica == null) {

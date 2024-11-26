@@ -6,14 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
+import br.com.loja.virtual.mentoria.model.Endereco;
 import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
+import br.com.loja.virtual.mentoria.model.dto.CepDTO;
+import br.com.loja.virtual.mentoria.repository.EnderecoRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.service.PessoaUsuarioService;
@@ -32,6 +37,18 @@ public class PessoaUsuarioController {
 
 	@Autowired
 	private PessoaFisicaRepository pessoaFisicaRepository;
+
+	@Autowired
+	private EnderecoRepository enderecoRepository;
+
+	@ResponseBody
+	@GetMapping(value = "**/consultaCep/{cep}")
+	public ResponseEntity<CepDTO> consultaCep(@PathVariable("cep") String cep) {
+
+		// Retorna a consulta para meu CepDTO
+		return new ResponseEntity<CepDTO>(pessoaUsuarioService.consultaCep(cep), HttpStatus.OK);
+
+	}
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarPessoaJuridica")
@@ -75,6 +92,51 @@ public class PessoaUsuarioController {
 		if (!ValidaCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
 			// Mostrando a mensagem que CNPJ não é válido
 			throw new LojaVirtualMentoriaException("CNPJ: " + pessoaJuridica.getCnpj() + " está inválido");
+		}
+
+		// Verificando se o ID é NULL ou se é menor ou igual a 0(zero)
+		if (pessoaJuridica.getId() == null || pessoaJuridica.getId() <= 0) {
+
+			// Varrendo lista de endereços
+			for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
+
+				// Atribuir ao DTO a consulta de CEP de cada endereço
+				CepDTO cepDTO = pessoaUsuarioService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+
+				// Setar os dados do endereço consutado pelo ViaCep
+				pessoaJuridica.getEnderecos().get(p).setLogradouro(cepDTO.getLogradouro());
+				pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
+				pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
+				pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
+				pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+
+			}
+
+		} else {
+
+			// Varrendo lista de endereços
+			for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
+
+				// Consultar por id a lista de endereço temporário e atribuir a uma variável
+				Endereco enderecoTemp = enderecoRepository.findById(pessoaJuridica.getEnderecos().get(p).getId()).get();
+
+				// Verificando se enderecoTemp é diferente ao que está no banco de dados
+				if (!enderecoTemp.getCep().equals(pessoaJuridica.getEnderecos().get(p).getCep())) {
+
+					// Atribuir ao DTO a consulta de CEP de cada endereço
+					CepDTO cepDTO = pessoaUsuarioService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+
+					// Setar os dados do endereço consutado pelo ViaCep
+					pessoaJuridica.getEnderecos().get(p).setLogradouro(cepDTO.getLogradouro());
+					pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
+					pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
+					pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
+					pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+
+				}
+
+			}
+
 		}
 
 		// Chamando o PessoaUsuarioService

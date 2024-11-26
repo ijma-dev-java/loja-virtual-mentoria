@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
 import br.com.loja.virtual.mentoria.model.Usuario;
+import br.com.loja.virtual.mentoria.model.dto.CepDTO;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.repository.UsuarioRepository;
@@ -28,10 +30,10 @@ public class PessoaUsuarioService {
 
 	@Autowired
 	private ServiceSendEmail serviceSendEmail;
-	
+
 	@Autowired
 	private PessoaFisicaRepository pessoaFisicaRepository;
-	
+
 	// Salvando PessoaJuridica
 	public PessoaJuridica salvarPessoaJuridica(PessoaJuridica pessoaJuridica) {
 
@@ -119,7 +121,7 @@ public class PessoaUsuarioService {
 		return pessoaJuridica;
 
 	}
-	
+
 	// Salvando PessoaFisica
 	public PessoaFisica salvarPessoaFisica(PessoaFisica pessoaFisica) {
 
@@ -199,6 +201,14 @@ public class PessoaUsuarioService {
 		}
 
 		return pessoaFisica;
+
+	}
+
+	// consultaCep do ViaCep
+	public CepDTO consultaCep(String cep) {
+
+		// Retorna a API do ViaCep pelo cep que for passado
+		return new RestTemplate().getForEntity("https://viacep.com.br/ws/" + cep + "/json/", CepDTO.class).getBody();
 
 	}
 

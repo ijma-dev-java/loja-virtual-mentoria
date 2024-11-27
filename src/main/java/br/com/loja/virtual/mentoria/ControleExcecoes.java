@@ -1,9 +1,14 @@
 package br.com.loja.virtual.mentoria;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,10 +23,14 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.loja.virtual.mentoria.model.dto.ObjetoErroDTO;
+import br.com.loja.virtual.mentoria.service.ServiceSendEmail;
 
 @RestControllerAdvice
 @ControllerAdvice
 public class ControleExcecoes extends ResponseEntityExceptionHandler {
+
+	@Autowired
+	private ServiceSendEmail serviceSendEmail;
 
 	// Captura execeções customizadas do projeto com a LojaVirtualMentoriaException
 	@ExceptionHandler(LojaVirtualMentoriaException.class)
@@ -93,6 +102,18 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 		// Monstrando mensagem de erro no console
 		ex.printStackTrace();
 
+		// Enviando e-mail caso ocorra erro
+		try {
+
+			serviceSendEmail.enviarEmailHtml("Erro na loja virtual", ExceptionUtils.getStackTrace(ex),
+					"ijma.services.tech@gmail.com");
+
+		} catch (UnsupportedEncodingException | MessagingException e) {
+
+			e.printStackTrace();
+
+		}
+
 		// Retorna o objeto de erro DTO
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -144,6 +165,18 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 
 		// Monstrando mensagem de erro no console
 		ex.printStackTrace();
+
+		// Enviando e-mail caso ocorra erro
+		try {
+
+			serviceSendEmail.enviarEmailHtml("Erro na loja virtual", ExceptionUtils.getStackTrace(ex),
+					"ijma.services.tech@gmail.com");
+
+		} catch (UnsupportedEncodingException | MessagingException e) {
+
+			e.printStackTrace();
+
+		}
 
 		// Retorna o objeto de erro DTO
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);

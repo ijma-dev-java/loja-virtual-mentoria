@@ -20,7 +20,6 @@ import br.com.loja.virtual.mentoria.repository.AcessoRepository;
 import br.com.loja.virtual.mentoria.service.AcessoService;
 
 @RestController
-@Controller
 public class AcessoController {
 
 	@Autowired

@@ -12,6 +12,7 @@ import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
 import br.com.loja.virtual.mentoria.model.Usuario;
 import br.com.loja.virtual.mentoria.model.dto.CepDTO;
+import br.com.loja.virtual.mentoria.model.dto.ConsultaCnpjDTO;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.repository.UsuarioRepository;
@@ -209,6 +210,15 @@ public class PessoaUsuarioService {
 
 		// Retorna a API do ViaCep pelo cep que for passado
 		return new RestTemplate().getForEntity("https://viacep.com.br/ws/" + cep + "/json/", CepDTO.class).getBody();
+
+	}
+
+	// consultaCnpjReceitaWS do Receita Federal
+	public ConsultaCnpjDTO consultaCnpjReceitaWS(String cnpj) {
+
+		// Retorna consulta pelo CNPJ vindo da API do Receita Federal
+		return new RestTemplate().getForEntity("https://receitaws.com.br/v1/cnpj/" + cnpj, ConsultaCnpjDTO.class)
+				.getBody();
 
 	}
 

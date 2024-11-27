@@ -22,6 +22,7 @@ import br.com.loja.virtual.mentoria.model.Endereco;
 import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
 import br.com.loja.virtual.mentoria.model.dto.CepDTO;
+import br.com.loja.virtual.mentoria.model.dto.ConsultaCnpjDTO;
 import br.com.loja.virtual.mentoria.repository.EnderecoRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
@@ -250,6 +251,15 @@ public class PessoaUsuarioController {
 
 		// Retorna pessoaJuridica salvo
 		return new ResponseEntity<PessoaFisica>(pessoaFisica, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "**/consultaCnpjReceitaWs/{cnpj}")
+	public ResponseEntity<ConsultaCnpjDTO> consultaCnpjReceitaWs(@PathVariable("cnpj") String cnpj) {
+
+		// Retorna consulta pelo CNPJ vindo da API do Receita Federal
+		return new ResponseEntity<ConsultaCnpjDTO>(pessoaUsuarioService.consultaCnpjReceitaWS(cnpj), HttpStatus.OK);
 
 	}
 

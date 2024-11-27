@@ -25,6 +25,7 @@ import br.com.loja.virtual.mentoria.repository.EnderecoRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.service.PessoaUsuarioService;
+import br.com.loja.virtual.mentoria.service.ServiceContagemAcessoApi;
 import br.com.loja.virtual.mentoria.util.ValidaCNPJ;
 import br.com.loja.virtual.mentoria.util.ValidaCPF;
 
@@ -46,6 +47,9 @@ public class PessoaUsuarioController {
 	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	private ServiceContagemAcessoApi serviceContagemAcessoApi;
 
 	@ResponseBody
 	@GetMapping(value = "**/consultaCep/{cep}")
@@ -64,7 +68,7 @@ public class PessoaUsuarioController {
 		List<PessoaFisica> pessoaFisicas = pessoaFisicaRepository.buscarNomeCadastrado(nome.trim().toUpperCase());
 		
 		// Atualizando a tabela de acesso ao End-Point
-		jdbcTemplate.execute("begin; update acesso_end_point set qtd = qtd + 1 where nome = 'buscarNomeCadastradoPf'; commit;");
+		serviceContagemAcessoApi.atualizaAcessoEndPointPF();
 
 		// Retorno da consulta por NOME
 		return new ResponseEntity<List<PessoaFisica>>(pessoaFisicas, HttpStatus.OK);

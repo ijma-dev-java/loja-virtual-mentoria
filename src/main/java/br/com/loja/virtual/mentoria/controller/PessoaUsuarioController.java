@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
+import br.com.loja.virtual.mentoria.enums.TipoPessoa;
 import br.com.loja.virtual.mentoria.model.Endereco;
 import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
@@ -223,6 +224,12 @@ public class PessoaUsuarioController {
 		if (pessoaFisica == null) {
 			// Mostrando a mensagem que a pessoaFisica não pode ser NULL
 			throw new LojaVirtualMentoriaException("Pessoa Física não pode ser NULL");
+		}
+
+		// Validando se o tipoPessoa da pessoaFisica está null
+		if (pessoaFisica.getTipoPessoa() == null) {
+			// Setar por padrão FISICA do ENUM
+			pessoaFisica.setTipoPessoa(TipoPessoa.FÍSICA.name());
 		}
 
 		// Validando se a pessoaFisica está com o id null

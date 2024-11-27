@@ -44,10 +44,10 @@ public class PessoaUsuarioController {
 
 	@Autowired
 	private EnderecoRepository enderecoRepository;
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	@Autowired
 	private ServiceContagemAcessoApi serviceContagemAcessoApi;
 
@@ -66,7 +66,7 @@ public class PessoaUsuarioController {
 
 		// Buscar NOME
 		List<PessoaFisica> pessoaFisicas = pessoaFisicaRepository.buscarNomeCadastrado(nome.trim().toUpperCase());
-		
+
 		// Atualizando a tabela de acesso ao End-Point
 		serviceContagemAcessoApi.atualizaAcessoEndPointPF();
 
@@ -129,6 +129,12 @@ public class PessoaUsuarioController {
 		if (pessoaJuridica == null) {
 			// Mostrando a mensagem que a pessoaJuridica não pode ser NULL
 			throw new LojaVirtualMentoriaException("Pessoa Jurídica não pode ser NULL");
+		}
+
+		// Validando se o TipoPessoa da pessoaJuridica está null
+		if (pessoaJuridica.getTipoPessoa() == null) {
+			// Mostrando a mensagem que o TipoPessoa da pessoaJuridica não pode ser NULL
+			throw new LojaVirtualMentoriaException("Informe o Tipo Jurídico ou Fornecedor da Loja");
 		}
 
 		// Validando se a pessoaJuridica está com o id null

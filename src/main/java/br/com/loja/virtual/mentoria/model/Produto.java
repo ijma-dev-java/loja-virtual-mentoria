@@ -79,7 +79,7 @@ public class Produto implements Serializable {
 	private Integer qtdClique = 0;
 
 	@NotNull(message = "A empresa responsável deve ser informada")
-	@ManyToOne(targetEntity = Pessoa.class)
+	@ManyToOne(targetEntity = PessoaJuridica.class)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
 	private PessoaJuridica empresa;
 

@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "marca_produto")
@@ -21,18 +22,20 @@ import javax.persistence.Table;
 public class MarcaProduto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "marca_produto_seq")
 	private Long id;
 
+	@NotNull(message = "A descrição da marca do produto de ser informada")
 	@Column(nullable = false)
 	private String descricao;
-
-	@ManyToOne(targetEntity = Pessoa.class)
+	
+	@NotNull(message = "A empresa responsável deve ser informada")
+	@ManyToOne(targetEntity = PessoaJuridica.class)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
-	private Pessoa empresa;
-
+	private PessoaJuridica empresa;
+	
 	public Long getId() {
 		return id;
 	}
@@ -49,11 +52,11 @@ public class MarcaProduto implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public Pessoa getEmpresa() {
+	public PessoaJuridica getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(Pessoa empresa) {
+	public void setEmpresa(PessoaJuridica empresa) {
 		this.empresa = empresa;
 	}
 

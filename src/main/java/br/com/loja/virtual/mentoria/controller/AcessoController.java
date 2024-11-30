@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,8 +67,6 @@ public class AcessoController {
 
 	}
 
-	// @CrossOrigin(origins = { "www.ijma.com.br" })
-	// @Secured({ "ROLE_ADMIN", "ROLE_GERENTE" }) - Permissão de acesso
 	@ResponseBody
 	@DeleteMapping(value = "**/deleteAcessoPorId/{id}")
 	public ResponseEntity<?> deleteAcessoPorId(@PathVariable("id") Long id) {
@@ -89,13 +86,14 @@ public class AcessoController {
 		// Buscar do banco de dados por ID
 		// Se não encontrar retorna null para evitar exceção
 		Acesso acesso = acessoRepository.findById(id).orElse(null);
-		
+
 		// Se o acesso estiver null
 		if (acesso == null) {
-			
-			// Mostra a mensagem customizada de acesso não não encontrato com o ID consultado
+
+			// Mostra a mensagem customizada de acesso não não encontrato com o ID
+			// consultado
 			throw new LojaVirtualMentoriaException("Acesso não encontrato com o ID: " + id);
-			
+
 		}
 
 		// Retorna a consulta do objeto

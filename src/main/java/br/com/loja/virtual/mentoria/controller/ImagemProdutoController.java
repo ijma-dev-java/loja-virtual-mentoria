@@ -18,19 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
 import br.com.loja.virtual.mentoria.model.ImagemProduto;
-import br.com.loja.virtual.mentoria.model.Produto;
 import br.com.loja.virtual.mentoria.model.dto.ImagemProdutoDTO;
 import br.com.loja.virtual.mentoria.repository.ImagemProdutoRepository;
-import br.com.loja.virtual.mentoria.repository.ProdutoRepository;
 
 @RestController
 public class ImagemProdutoController {
 
 	@Autowired
 	private ImagemProdutoRepository imagemProdutoRepository;
-
-	@Autowired
-	private ProdutoRepository produtoRepository;
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarImagemProduto")
@@ -111,16 +106,6 @@ public class ImagemProdutoController {
 	@GetMapping(value = "**/buscaImagemProdutoByIdProduto/{idProduto}")
 	public ResponseEntity<List<ImagemProdutoDTO>> buscaImagemProdutoByIdProduto(
 			@PathVariable("idProduto") Long idProduto) throws LojaVirtualMentoriaException {
-
-		Produto produto = produtoRepository.findById(idProduto).orElse(null);
-
-		// Se o produto estiver null
-		if (produto == null) {
-
-			// Mostra a mensagem que o produto não foi encontrato com o id consultado
-			throw new LojaVirtualMentoriaException("Produto não encontrato com o ID: " + idProduto);
-
-		}
 
 		// Instância da Lista do ImagemProdutoDTO
 		List<ImagemProdutoDTO> imagemProdutoDTOs = new ArrayList<ImagemProdutoDTO>();

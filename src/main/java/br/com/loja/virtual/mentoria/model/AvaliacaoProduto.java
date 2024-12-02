@@ -18,6 +18,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "avaliacao_produto")
 @SequenceGenerator(name = "avaliacao_produto_seq", sequenceName = "avaliacao_produto_seq", allocationSize = 1, initialValue = 1)
@@ -39,15 +41,19 @@ public class AvaliacaoProduto implements Serializable {
 	private Integer nota;
 
 	@ManyToOne(targetEntity = PessoaFisica.class)
-	@JoinColumn(name = "pessoa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
+	@JoinColumn(name = "pessoa_id", nullable = false, 
+	foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fk"))
 	private PessoaFisica pessoa;
 
 	@ManyToOne(targetEntity = PessoaJuridica.class)
-	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
+	@JoinColumn(name = "empresa_id", nullable = false, 
+	foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
 	private PessoaJuridica empresa;
-
+	
+	@JsonBackReference
 	@ManyToOne
-	@JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
+	@JoinColumn(name = "produto_id", nullable = false, 
+	foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "produto_fk"))
 	private Produto produto;
 
 	public Long getId() {

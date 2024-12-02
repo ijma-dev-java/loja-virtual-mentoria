@@ -89,12 +89,12 @@ public class Produto implements Serializable {
 	@NotNull(message = "A Categoria do Produto deve ser informada")
 	@ManyToOne(targetEntity = CategoriaProduto.class)
 	@JoinColumn(name = "categoria_produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "categoria_produto_fk"))
-	private CategoriaProduto categoriaProduto = new CategoriaProduto();
+	private CategoriaProduto categoriaProduto;
 
 	@NotNull(message = "A Marca do Produto deve ser informada")
 	@ManyToOne(targetEntity = MarcaProduto.class)
 	@JoinColumn(name = "marca_produto_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "marca_produto_fk"))
-	private MarcaProduto marcaProduto = new MarcaProduto();
+	private MarcaProduto marcaProduto;
 
 	@OneToMany(mappedBy = "produto", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<ImagemProduto> imagens = new ArrayList<ImagemProduto>();

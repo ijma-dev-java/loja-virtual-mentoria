@@ -1,5 +1,7 @@
 package br.com.loja.virtual.mentoria.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,8 +13,12 @@ import br.com.loja.virtual.mentoria.model.VendaCompraLojaVirtual;
 @Transactional
 public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCompraLojaVirtual, Long> {
 
-	// Consultado pelo item excluido
+	// Buscar pelo item excluido
 	@Query(value = "select vclv from VendaCompraLojaVirtual vclv where vclv.id = ?1 and vclv.excluido = false")
 	VendaCompraLojaVirtual findByIdExclusao(Long id);
+
+	// Buscar venda de compra pela loja virtual por id do produto
+	@Query(value = "select i.vendaCompraLojaVirtual from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and i.produto.id = ?1")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByproduto(Long idProduto);
 
 }

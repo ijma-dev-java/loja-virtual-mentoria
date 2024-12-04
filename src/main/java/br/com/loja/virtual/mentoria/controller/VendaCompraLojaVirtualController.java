@@ -257,11 +257,109 @@ public class VendaCompraLojaVirtualController {
 
 		// Consulta no banco de dados
 		List<VendaCompraLojaVirtual> vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
-				.buscarVendaCompraLojaVirtualByproduto(idProduto);
+				.buscarVendaCompraLojaVirtualByProduto(idProduto);
 
 		// Verifica se o vendaCompraLojaVirtual está null
 		if (vendaCompraLojaVirtual == null) {
 
+			vendaCompraLojaVirtual = new ArrayList<VendaCompraLojaVirtual>();
+
+		}
+
+		// Instanciando a lista de VendaCompraLojaVirtualDTO
+		List<VendaCompraLojaVirtualDTO> vendaCompraLojaVirtualDTOs = new ArrayList<VendaCompraLojaVirtualDTO>();
+
+		// Varrendo o VendaCompraLojaVirtual
+		for (VendaCompraLojaVirtual vclv : vendaCompraLojaVirtual) {
+
+			// Instancia o VendaCompraLojaVirtualDTO
+			VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
+
+			// Setando o vendaCompraLojaVirtualDTO
+			vendaCompraLojaVirtualDTO.setId(vclv.getId());
+			vendaCompraLojaVirtualDTO.setValorTotal(vclv.getValorTotal());
+			vendaCompraLojaVirtualDTO.setValorDesconto(vclv.getValorDesconto());
+			vendaCompraLojaVirtualDTO.setPessoa(vclv.getPessoa());
+			vendaCompraLojaVirtualDTO.setEnderecoCobranca(vclv.getEnderecoCobranca());
+			vendaCompraLojaVirtualDTO.setEnderecoEntrega(vclv.getEnderecoEntrega());
+			vendaCompraLojaVirtualDTO.setValorFrete(vclv.getValorFrete());
+
+			// Varrendo a lista de itens de venda da loja e Adicionando o DTO
+			for (ItemVendaLoja itemVendaLoja : vclv.getItemVendaLojas()) {
+
+				// Instancia o ItemVendaLojaDTO
+				ItemVendaLojaDTO itemVendaLojaDTO = new ItemVendaLojaDTO();
+
+				// Setando os atributos
+				itemVendaLojaDTO.setProduto(itemVendaLoja.getProduto());
+				itemVendaLojaDTO.setQtd(itemVendaLoja.getQtd());
+
+				// Adicionando o ItemVendaLojaDTO ao meu VendaCompraLojaVirtualDTO
+				vendaCompraLojaVirtualDTO.getItemVendaLojas().add(itemVendaLojaDTO);
+
+			}
+
+			// Adicionando a minha lista vendaCompraLojaVirtualDTOs
+			// Ao vendaCompraLojaVirtualDTO de retorno
+			vendaCompraLojaVirtualDTOs.add(vendaCompraLojaVirtualDTO);
+
+		}
+
+		// Retornando o vendaCompraLojaVirtualDTO
+		return new ResponseEntity<List<VendaCompraLojaVirtualDTO>>(vendaCompraLojaVirtualDTOs, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "**/buscarVendaCompraLojaVirtualDinamica/{valorConsulta}/{tipoConsulta}")
+	public ResponseEntity<List<VendaCompraLojaVirtualDTO>> buscarVendaCompraLojaVirtualDinamica(
+			@PathVariable("valorConsulta") String valorConsulta, @PathVariable("tipoConsulta") String tipoConsulta)
+			throws LojaVirtualMentoriaException {
+
+		// Instancia a VendaCompraLojaVirtual em uma lista
+		List<VendaCompraLojaVirtual> vendaCompraLojaVirtual = null;
+
+		// Verifica consulta por id do produto
+		if (tipoConsulta.equalsIgnoreCase("POR_ID_PRODUTO")) {
+
+			// Buscar no banco de dados
+			vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
+					.buscarVendaCompraLojaVirtualByProduto(Long.parseLong(valorConsulta));
+
+			// Verifica consulta por nome do produto
+		} else if (tipoConsulta.equalsIgnoreCase("POR_NOME_PRODUTO")) {
+
+			// Buscar no banco de dados
+			vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
+					.buscarVendaCompraLojaVirtualByNomeProduto(valorConsulta.toUpperCase().trim());
+
+			// Verifica consulta por nome do cliente
+		} else if (tipoConsulta.equalsIgnoreCase("POR_NOME_CLIENTE")) {
+
+			// Buscar no banco de dados
+			vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
+					.buscarVendaCompraLojaVirtualByNomeCliente(valorConsulta.toUpperCase().trim());
+
+			// Verifica consulta por endereço de cobrança
+		} else if (tipoConsulta.equalsIgnoreCase("POR_ENDERECO_COBRANCA")) {
+
+			// Buscar no banco de dados
+			vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
+					.buscarVendaCompraLojaVirtualByEnderecoCobranca(valorConsulta.toUpperCase().trim());
+
+			// Verifica consulta por endereço de entrega
+		} else if (tipoConsulta.equalsIgnoreCase("POR_ENDERECO_ENTREGA")) {
+
+			// Buscar no banco de dados
+			vendaCompraLojaVirtual = vendaCompraLojaVirtualRepository
+					.buscarVendaCompraLojaVirtualByEnderecoEntrega(valorConsulta.toUpperCase().trim());
+
+		}
+
+		// Verifica se o vendaCompraLojaVirtual está null
+		if (vendaCompraLojaVirtual == null) {
+
+			// Instanciando uma nova lista pra evitat exeção
 			vendaCompraLojaVirtual = new ArrayList<VendaCompraLojaVirtual>();
 
 		}

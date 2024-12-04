@@ -1,5 +1,6 @@
 package br.com.loja.virtual.mentoria.controller;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -411,7 +412,7 @@ public class VendaCompraLojaVirtualController {
 	@ResponseBody
 	@GetMapping(value = "**/buscarVendaCompraLojaVirtualByFaixaData/{data1}/{data2}")
 	public ResponseEntity<List<VendaCompraLojaVirtualDTO>> buscarVendaCompraLojaVirtualByFaixaData(
-			@PathVariable("data1") String data1, @PathVariable("data2") String data2) {
+			@PathVariable("data1") String data1, @PathVariable("data2") String data2) throws ParseException {
 
 		// Instancia a VendaCompraLojaVirtual em uma lista
 		List<VendaCompraLojaVirtual> vendaCompraLojaVirtuals = null;

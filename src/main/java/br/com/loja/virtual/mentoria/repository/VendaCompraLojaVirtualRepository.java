@@ -1,5 +1,6 @@
 package br.com.loja.virtual.mentoria.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -36,5 +37,10 @@ public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCom
 	// Buscar venda de compra pela loja virtual por endereço de entrega
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.vendaCompraLojaVirtual.enderecoEntrega.logradouro)) like %?1%")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByEnderecoEntrega(String enderecoEntrega);
+	
+	// Buscar venda de compra pela loja virtual por faixa de data
+	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and i.vendaCompraLojaVirtual.dataVenda >= ?1 and i.vendaCompraLojaVirtual.dataVenda <= ?2")
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByFaixaData(Date data1, Date data2);
+
 
 }

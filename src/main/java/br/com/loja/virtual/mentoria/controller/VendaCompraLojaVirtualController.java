@@ -472,4 +472,65 @@ public class VendaCompraLojaVirtualController {
 
 	}
 
+	@ResponseBody
+	@GetMapping(value = "**/buscarVendaCompraLojaVirtualByIdCliente/{idCliente}")
+	public ResponseEntity<List<VendaCompraLojaVirtualDTO>> buscarVendaCompraLojaVirtualByIdCliente(
+			@PathVariable("idCliente") Long idCliente) {
+
+		// Consultando no banco de dados com o vendaCompraLojaVirtualService
+		List<VendaCompraLojaVirtual> vendaCompraLojaVirtuals = vendaCompraLojaVirtualRepository
+				.buscarVendaCompraLojaVirtualByIdCliente(idCliente);
+
+		// Verifica se o vendaCompraLojaVirtual está null
+		if (vendaCompraLojaVirtuals == null) {
+
+			// Instanciando uma nova lista pra evitar exeção
+			vendaCompraLojaVirtuals = new ArrayList<VendaCompraLojaVirtual>();
+
+		}
+
+		// Instanciando a lista de VendaCompraLojaVirtualDTO
+		List<VendaCompraLojaVirtualDTO> vendaCompraLojaVirtualDTOs = new ArrayList<VendaCompraLojaVirtualDTO>();
+
+		// Varrendo o VendaCompraLojaVirtual
+		for (VendaCompraLojaVirtual vclv : vendaCompraLojaVirtuals) {
+
+			// Instancia o VendaCompraLojaVirtualDTO
+			VendaCompraLojaVirtualDTO vendaCompraLojaVirtualDTO = new VendaCompraLojaVirtualDTO();
+
+			// Setando o vendaCompraLojaVirtualDTO
+			vendaCompraLojaVirtualDTO.setId(vclv.getId());
+			vendaCompraLojaVirtualDTO.setValorTotal(vclv.getValorTotal());
+			vendaCompraLojaVirtualDTO.setValorDesconto(vclv.getValorDesconto());
+			vendaCompraLojaVirtualDTO.setPessoa(vclv.getPessoa());
+			vendaCompraLojaVirtualDTO.setEnderecoCobranca(vclv.getEnderecoCobranca());
+			vendaCompraLojaVirtualDTO.setEnderecoEntrega(vclv.getEnderecoEntrega());
+			vendaCompraLojaVirtualDTO.setValorFrete(vclv.getValorFrete());
+
+			// Varrendo a lista de itens de venda da loja e Adicionando o DTO
+			for (ItemVendaLoja itemVendaLoja : vclv.getItemVendaLojas()) {
+
+				// Instancia o ItemVendaLojaDTO
+				ItemVendaLojaDTO itemVendaLojaDTO = new ItemVendaLojaDTO();
+
+				// Setando os atributos
+				itemVendaLojaDTO.setProduto(itemVendaLoja.getProduto());
+				itemVendaLojaDTO.setQtd(itemVendaLoja.getQtd());
+
+				// Adicionando o ItemVendaLojaDTO ao meu VendaCompraLojaVirtualDTO
+				vendaCompraLojaVirtualDTO.getItemVendaLojas().add(itemVendaLojaDTO);
+
+			}
+
+			// Adicionando a minha lista vendaCompraLojaVirtualDTOs
+			// Ao vendaCompraLojaVirtualDTO de retorno
+			vendaCompraLojaVirtualDTOs.add(vendaCompraLojaVirtualDTO);
+
+		}
+
+		// Retornando o vendaCompraLojaVirtualDTO
+		return new ResponseEntity<List<VendaCompraLojaVirtualDTO>>(vendaCompraLojaVirtualDTOs, HttpStatus.OK);
+
+	}
+
 }

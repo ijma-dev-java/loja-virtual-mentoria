@@ -17,13 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
 import br.com.loja.virtual.mentoria.model.NotaFiscalCompra;
+import br.com.loja.virtual.mentoria.model.NotaFiscalVenda;
 import br.com.loja.virtual.mentoria.repository.NotaFiscalCompraRepository;
+import br.com.loja.virtual.mentoria.repository.NotaFiscalVendaRepository;
 
 @RestController
 public class NotaFiscalCompraController {
 
 	@Autowired
 	private NotaFiscalCompraRepository notaFiscalCompraRepository;
+
+	@Autowired
+	private NotaFiscalVendaRepository notaFiscalVendaRepository;
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarNotaFiscalCompra")
@@ -133,6 +138,52 @@ public class NotaFiscalCompraController {
 
 		// Retorna a consulta
 		return new ResponseEntity<List<NotaFiscalCompra>>(notaFiscalCompras, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "**/buscaNotaFiscalByVendaCompraLojaVirtualLista/{idvenda}")
+	public ResponseEntity<List<NotaFiscalVenda>> buscaNotaFiscalByVendaCompraLojaVirtualLista(
+			@PathVariable("idvenda") Long idvenda) throws LojaVirtualMentoriaException {
+
+		// Buscar no banco de dados
+		List<NotaFiscalVenda> notaFiscalVendas = notaFiscalVendaRepository
+				.buscaNotaFiscalByVendaCompraLojaVirtualLista(idvenda);
+
+		// Verifica se notaFiscalVendas
+		if (notaFiscalVendas == null) {
+
+			// Mostra mensagem para o cliente
+			throw new LojaVirtualMentoriaException(
+					"Não encontrou nota fiscal de venda com código da venda: " + idvenda);
+
+		}
+
+		// Retorna a consulta no banco de dados
+		return new ResponseEntity<List<NotaFiscalVenda>>(notaFiscalVendas, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "**/buscaNotaFiscalByVendaCompraLojaVirtualObjeto/{idvenda}")
+	public ResponseEntity<NotaFiscalVenda> buscaNotaFiscalByVendaCompraLojaVirtualObjeto(
+			@PathVariable("idvenda") Long idvenda) throws LojaVirtualMentoriaException {
+
+		// Buscar no banco de dados
+		NotaFiscalVenda notaFiscalVenda = notaFiscalVendaRepository
+				.buscaNotaFiscalByVendaCompraLojaVirtualObjeto(idvenda);
+
+		// Verifica se notaFiscalVendas
+		if (notaFiscalVenda == null) {
+
+			// Monstra mensagem para o cliente
+			throw new LojaVirtualMentoriaException(
+					"Não encontrou nota fiscal de venda com código da venda: " + idvenda);
+
+		}
+
+		// Retorna a consulta no banco de dados
+		return new ResponseEntity<NotaFiscalVenda>(notaFiscalVenda, HttpStatus.OK);
 
 	}
 

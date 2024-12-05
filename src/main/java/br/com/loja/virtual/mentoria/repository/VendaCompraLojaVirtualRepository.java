@@ -28,7 +28,7 @@ public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCom
 	
 	// Buscar venda de compra pela loja virtual por id do cliente
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and i.vendaCompraLojaVirtual.pessoa.id = ?1")
-	List<VendaCompraLojaVirtual> vendaPorCliente(Long idCliente);
+	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByIdCliente(Long idCliente);
 
 	// Buscar venda de compra pela loja virtual por nome do cliente
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.vendaCompraLojaVirtual.pessoa.nome)) like %?1%")

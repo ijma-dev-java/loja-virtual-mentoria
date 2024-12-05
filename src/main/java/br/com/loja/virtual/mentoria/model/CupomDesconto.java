@@ -18,6 +18,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "cupom_desconto")
@@ -37,10 +38,12 @@ public class CupomDesconto implements Serializable {
 
 	private BigDecimal valorPorcentagemDesconto;
 
+	@NotNull(message = "Informe a validade do cupom de desconto")
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataValidadeCupom;
 
+	@NotNull(message = "Informe a empresa responsável pelo cupom de desconto")
 	@ManyToOne(targetEntity = Pessoa.class)
 	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
 	private Pessoa empresa;
@@ -85,7 +88,7 @@ public class CupomDesconto implements Serializable {
 		this.dataValidadeCupom = dataValidadeCupom;
 	}
 
-	 public Pessoa getEmpresa() {
+	public Pessoa getEmpresa() {
 		return empresa;
 	}
 

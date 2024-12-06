@@ -1,5 +1,6 @@
 package br.com.loja.virtual.mentoria.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
 import br.com.loja.virtual.mentoria.model.NotaFiscalCompra;
 import br.com.loja.virtual.mentoria.model.NotaFiscalVenda;
+import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioDTO;
 import br.com.loja.virtual.mentoria.repository.NotaFiscalCompraRepository;
 import br.com.loja.virtual.mentoria.repository.NotaFiscalVendaRepository;
+import br.com.loja.virtual.mentoria.service.NotaFiscalCompraService;
 
 @RestController
 public class NotaFiscalCompraController {
@@ -29,6 +32,9 @@ public class NotaFiscalCompraController {
 
 	@Autowired
 	private NotaFiscalVendaRepository notaFiscalVendaRepository;
+
+	@Autowired
+	private NotaFiscalCompraService notaFiscalCompraService;
 
 	@ResponseBody
 	@PostMapping(value = "**/salvarNotaFiscalCompra")
@@ -184,6 +190,22 @@ public class NotaFiscalCompraController {
 
 		// Retorna a consulta no banco de dados
 		return new ResponseEntity<NotaFiscalVenda>(notaFiscalVenda, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@PostMapping(value = "**/buscarNotaFiscalCompraRelatorio")
+	public ResponseEntity<List<NotaFiscalCompraRelatorioDTO>> buscarNotaFiscalCompraRelatorio(
+			@Valid @RequestBody NotaFiscalCompraRelatorioDTO notaFiscalCompraRelatorioDTO) {
+
+		// Instanciando o NotaFiscalCompraRelatorioDTO em uma lista
+		List<NotaFiscalCompraRelatorioDTO> retorno = new ArrayList<NotaFiscalCompraRelatorioDTO>();
+
+		// Consultando no banco de dados com o nosso service
+		retorno = notaFiscalCompraService.geradorRelatorioNotaFiscalCompra(notaFiscalCompraRelatorioDTO);
+
+		// Retorno a consulta em uma lista
+		return new ResponseEntity<List<NotaFiscalCompraRelatorioDTO>>(retorno, HttpStatus.OK);
 
 	}
 

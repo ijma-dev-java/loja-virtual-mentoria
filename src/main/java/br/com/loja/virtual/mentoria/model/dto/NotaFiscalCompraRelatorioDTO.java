@@ -1,0 +1,113 @@
+package br.com.loja.virtual.mentoria.model.dto;
+
+import java.io.Serializable;
+
+import javax.validation.constraints.NotEmpty;
+
+public class NotaFiscalCompraRelatorioDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@NotEmpty(message = "Informa a data inicial")
+	private String dataInicial;
+
+	@NotEmpty(message = "Informa a data final")
+	private String dataFinal;
+
+	private String codigoProduto = "";
+
+	private String nomeProduto = "";
+
+	private String valorVendaProduto = "";
+
+	private String qtdCompra = "";
+
+	private String codigoFornecedor = "";
+
+	private String nomeFornecedor = "";
+
+	private String dataCompra = "";
+
+	private String codigoNota = "";
+
+	public String getDataInicial() {
+		return dataInicial;
+	}
+
+	public void setDataInicial(String dataInicial) {
+		this.dataInicial = dataInicial;
+	}
+
+	public String getDataFinal() {
+		return dataFinal;
+	}
+
+	public void setDataFinal(String dataFinal) {
+		this.dataFinal = dataFinal;
+	}
+
+	public String getCodigoProduto() {
+		return codigoProduto;
+	}
+
+	public void setCodigoProduto(String codigoProduto) {
+		this.codigoProduto = codigoProduto;
+	}
+
+	public String getNomeProduto() {
+		return nomeProduto;
+	}
+
+	public void setNomeProduto(String nomeProduto) {
+		this.nomeProduto = nomeProduto;
+	}
+
+	public String getValorVendaProduto() {
+		return valorVendaProduto;
+	}
+
+	public void setValorVendaProduto(String valorVendaProduto) {
+		this.valorVendaProduto = valorVendaProduto;
+	}
+
+	public String getQtdCompra() {
+		return qtdCompra;
+	}
+
+	public void setQtdCompra(String qtdCompra) {
+		this.qtdCompra = qtdCompra;
+	}
+
+	public String getCodigoFornecedor() {
+		return codigoFornecedor;
+	}
+
+	public void setCodigoFornecedor(String codigoFornecedor) {
+		this.codigoFornecedor = codigoFornecedor;
+	}
+
+	public String getNomeFornecedor() {
+		return nomeFornecedor;
+	}
+
+	public void setNomeFornecedor(String nomeFornecedor) {
+		this.nomeFornecedor = nomeFornecedor;
+	}
+
+	public String getDataCompra() {
+		return dataCompra;
+	}
+
+	public void setDataCompra(String dataCompra) {
+		this.dataCompra = dataCompra;
+	}
+
+	public String getCodigoNota() {
+		return codigoNota;
+	}
+
+	public void setCodigoNota(String codigoNota) {
+		this.codigoNota = codigoNota;
+	}
+
+}

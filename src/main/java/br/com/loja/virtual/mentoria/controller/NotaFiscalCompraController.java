@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
 import br.com.loja.virtual.mentoria.model.NotaFiscalCompra;
 import br.com.loja.virtual.mentoria.model.NotaFiscalVenda;
-import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioDTO;
+import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO;
+import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoDTO;
 import br.com.loja.virtual.mentoria.repository.NotaFiscalCompraRepository;
 import br.com.loja.virtual.mentoria.repository.NotaFiscalVendaRepository;
 import br.com.loja.virtual.mentoria.service.NotaFiscalCompraService;
@@ -194,18 +195,35 @@ public class NotaFiscalCompraController {
 	}
 
 	@ResponseBody
-	@PostMapping(value = "**/buscarNotaFiscalCompraRelatorio")
-	public ResponseEntity<List<NotaFiscalCompraRelatorioDTO>> buscarNotaFiscalCompraRelatorio(
-			@Valid @RequestBody NotaFiscalCompraRelatorioDTO notaFiscalCompraRelatorioDTO) {
+	@PostMapping(value = "**/buscarNotaFiscalCompraRelatorioProduto")
+	public ResponseEntity<List<NotaFiscalCompraRelatorioProdutoDTO>> buscarNotaFiscalCompraRelatorioProduto(
+			@Valid @RequestBody NotaFiscalCompraRelatorioProdutoDTO notaFiscalCompraRelatorioDTO) {
 
 		// Instanciando o NotaFiscalCompraRelatorioDTO em uma lista
-		List<NotaFiscalCompraRelatorioDTO> retorno = new ArrayList<NotaFiscalCompraRelatorioDTO>();
+		List<NotaFiscalCompraRelatorioProdutoDTO> retorno = new ArrayList<NotaFiscalCompraRelatorioProdutoDTO>();
 
 		// Consultando no banco de dados com o nosso service
-		retorno = notaFiscalCompraService.geradorRelatorioNotaFiscalCompra(notaFiscalCompraRelatorioDTO);
+		retorno = notaFiscalCompraService.geradorRelatorioProdutoNotaFiscalCompra(notaFiscalCompraRelatorioDTO);
 
 		// Retorno a consulta em uma lista
-		return new ResponseEntity<List<NotaFiscalCompraRelatorioDTO>>(retorno, HttpStatus.OK);
+		return new ResponseEntity<List<NotaFiscalCompraRelatorioProdutoDTO>>(retorno, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@PostMapping(value = "**/buscarNotaFiscalCompraRelatorioProdutoAlertaEstoque")
+	public ResponseEntity<List<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO>> buscarNotaFiscalCompraRelatorioProdutoAlertaEstoque(
+			@Valid @RequestBody NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO) {
+
+		// Instanciando o NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO em uma lista
+		List<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO> retorno = new ArrayList<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO>();
+
+		// Consultando no banco de dados com o nosso service
+		retorno = notaFiscalCompraService
+				.geradorRelatorioProdutoAlertaEstoqueNotaFiscalCompra(notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO);
+
+		// Retorno a consulta em uma lista
+		return new ResponseEntity<List<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO>>(retorno, HttpStatus.OK);
 
 	}
 

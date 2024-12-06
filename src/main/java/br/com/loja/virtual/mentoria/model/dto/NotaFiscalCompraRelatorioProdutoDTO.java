@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotEmpty;
 
-public class NotaFiscalCompraRelatorioDTO implements Serializable {
+public class NotaFiscalCompraRelatorioProdutoDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

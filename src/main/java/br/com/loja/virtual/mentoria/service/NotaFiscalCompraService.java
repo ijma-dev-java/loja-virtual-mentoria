@@ -8,7 +8,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioDTO;
+import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO;
+import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoDTO;
 
 @Service
 public class NotaFiscalCompraService {
@@ -16,11 +17,18 @@ public class NotaFiscalCompraService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	public List<NotaFiscalCompraRelatorioDTO> geradorRelatorioNotaFiscalCompra(
-			NotaFiscalCompraRelatorioDTO notaFiscalCompraRelatorioDTO) {
+	// Title: Histórico de compras de produtor para a loja
+	// Este relatório permite saber os produtos comprados para serem vendidos
+	// pela loja virtual, todos os produtos tem relação com a nota fiscal de
+	// compra/venda
+	// @param NotaFiscalCompraRelatorioProdutoDTO
+	// @param dataInicio e dataFinal são parametros obrigatórios
+	// @return List<NotaFiscalCompraRelatorioProdutoDTO>
+	public List<NotaFiscalCompraRelatorioProdutoDTO> geradorRelatorioProdutoNotaFiscalCompra(
+			NotaFiscalCompraRelatorioProdutoDTO notaFiscalCompraRelatorioProdutoDTO) {
 
 		// Instanciando o NotaFiscalCompraRelatorioDTO
-		List<NotaFiscalCompraRelatorioDTO> retorno = new ArrayList<NotaFiscalCompraRelatorioDTO>();
+		List<NotaFiscalCompraRelatorioProdutoDTO> retorno = new ArrayList<NotaFiscalCompraRelatorioProdutoDTO>();
 
 		// Escrevendo SQL
 		String sql = "select p.id as codigoProduto, p.nome as nomeProduto, p.valor_venda as valorVendaProduto, "
@@ -29,57 +37,111 @@ public class NotaFiscalCompraService {
 				+ " inner join nota_item_produto as nip on nfc.id = nota_fiscal_compra_id "
 				+ " inner join produto as p on p.id = nip.produto_id "
 				+ " inner join pessoa_juridica as pj on pj.id = nfc.pessoa_id where ";
-		
+
 		// Continuação do SQL
-		sql += " nfc.data_compra >= '" + notaFiscalCompraRelatorioDTO.getDataInicial() + "' and ";
-		sql += " nfc.data_compra <= '" + notaFiscalCompraRelatorioDTO.getDataFinal() + "' ";
-		
+		sql += " nfc.data_compra >= '" + notaFiscalCompraRelatorioProdutoDTO.getDataInicial() + "' and ";
+		sql += " nfc.data_compra <= '" + notaFiscalCompraRelatorioProdutoDTO.getDataFinal() + "' ";
+
 		// Verificando o código da nota
-		if (!notaFiscalCompraRelatorioDTO.getCodigoNota().isEmpty()) {
-		
+		if (!notaFiscalCompraRelatorioProdutoDTO.getCodigoNota().isEmpty()) {
+
 			// Mostrando para o cliente
-			sql += " and nfc.id = " + notaFiscalCompraRelatorioDTO.getCodigoNota() + " ";
-			
+			sql += " and nfc.id = " + notaFiscalCompraRelatorioProdutoDTO.getCodigoNota() + " ";
+
 		}
-		
+
 		// Verificando o código produto
-		if (!notaFiscalCompraRelatorioDTO.getCodigoProduto().isEmpty()) {
-			
+		if (!notaFiscalCompraRelatorioProdutoDTO.getCodigoProduto().isEmpty()) {
+
 			// Mostrando para o cliente
-			sql += " and p.id = " + notaFiscalCompraRelatorioDTO.getCodigoProduto() + " ";
-			
+			sql += " and p.id = " + notaFiscalCompraRelatorioProdutoDTO.getCodigoProduto() + " ";
+
 		}
 
 		// Verificando o nome do produto
-		if (!notaFiscalCompraRelatorioDTO.getNomeProduto().isEmpty()) {
-			
+		if (!notaFiscalCompraRelatorioProdutoDTO.getNomeProduto().isEmpty()) {
+
 			// Mostrando para o cliente
-			sql += " upper(p.nome) like upper('%" + notaFiscalCompraRelatorioDTO.getNomeProduto() + "')";
-			
+			sql += " upper(p.nome) like upper('%" + notaFiscalCompraRelatorioProdutoDTO.getNomeProduto() + "')";
+
 		}
-		
+
 		// Verificando o nome do fornecedor
-		if (!notaFiscalCompraRelatorioDTO.getNomeFornecedor().isEmpty()) {
-			
+		if (!notaFiscalCompraRelatorioProdutoDTO.getNomeFornecedor().isEmpty()) {
+
 			// Mostrando para o cliente
-			sql += " upper(pj.nome) like upper('%" + notaFiscalCompraRelatorioDTO.getNomeFornecedor() + "')";
-			
+			sql += " upper(pj.nome) like upper('%" + notaFiscalCompraRelatorioProdutoDTO.getNomeFornecedor() + "')";
+
 		}
-		
+
 		// Verificando a quantidade de itens do produto
-		if (!notaFiscalCompraRelatorioDTO.getQtdCompra().isEmpty()) {
-			
+		if (!notaFiscalCompraRelatorioProdutoDTO.getQtdCompra().isEmpty()) {
+
 			// Mostrando para o cliente
-			sql += " and nip.qtd = " + notaFiscalCompraRelatorioDTO.getQtdCompra() + " ";
-			
+			sql += " and nip.qtd = " + notaFiscalCompraRelatorioProdutoDTO.getQtdCompra() + " ";
+
 		}
 
 		// Aprontando no relatório
-		retorno = jdbcTemplate.query(sql, new BeanPropertyRowMapper(NotaFiscalCompraRelatorioDTO.class));
+		retorno = jdbcTemplate.query(sql, new BeanPropertyRowMapper(NotaFiscalCompraRelatorioProdutoDTO.class));
 
 		// Retorna o relatório em uma lista
 		return retorno;
 
+	}
+
+	// Este relatório retorna os produtos que estão com estoque menor ou igual a
+	// quantidade definida no campo de qtd_alerta_estoque.
+	// @param alertaEstoque NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO
+	// @return List<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO>
+	// Lista de objetos NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO
+	public List<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO> geradorRelatorioProdutoAlertaEstoqueNotaFiscalCompra(
+			NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO) {
+
+		// Instanciando o NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO
+		List<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO> retorno = new ArrayList<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO>();
+
+		// Escrevendo SQL
+		String sql = "select pj.id as codigoFornecedor, pj.nome as nomeFornecedor, "
+				+ " nfc.id as codigoNota, nfc.data_compra as dataCompra, "
+				+ " p.id as codigoProduto, p.nome as nomeProduto, "
+				+ " p.valor_venda as valorVendaProduto, "
+				+ " p.qtd_estoque as qtdEstoque, p.qtd_alerta_estoque as qtdAlertaEstoque, "
+				+ " nip.qtd as qtdCompra "
+				+ " from nota_fiscal_compra as nfc "
+				+ " inner join nota_item_produto as nip on nfc.id = nota_fiscal_compra_id "
+				+ " inner join produto as p on p.id = nip.produto_id "
+				+ " inner join pessoa_juridica as pj on pj.id = nfc.pessoa_id where";
+
+		// Continuação do SQL
+		sql += " nfc.data_compra >= '" + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getDataInicial() + "' and ";
+		sql += " nfc.data_compra <= '" + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getDataFinal() + "' ";
+		sql += " and p.alerta_qtd_estoque = true and p.qtd_estoque <= p.qtd_alerta_estoque ";
+
+		// Verificando o codido da nota fiscal d compra do produto
+		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoNota().isEmpty()) {
+			sql += " and nfc.id = " + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoNota() + " ";
+		}
+
+		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoProduto().isEmpty()) {
+			sql += " and p.id = " + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoProduto() + " ";
+		}
+
+		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeProduto().isEmpty()) {
+			sql += " upper(p.nome) like upper('%" + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeProduto()
+					+ "')";
+		}
+
+		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeFornecedor().isEmpty()) {
+			sql += " upper(pj.nome) like upper('%"
+					+ notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeFornecedor() + "')";
+		}
+
+		retorno = jdbcTemplate.query(sql,
+				new BeanPropertyRowMapper(NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.class));
+
+		return retorno;
+		
 	}
 
 }

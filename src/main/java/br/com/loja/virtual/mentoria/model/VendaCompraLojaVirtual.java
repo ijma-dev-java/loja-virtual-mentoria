@@ -11,6 +11,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -28,6 +30,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import br.com.loja.virtual.mentoria.enums.StatusVendaCompraLojaVirtual;
 
 @Entity
 @Table(name = "venda_compra_loja_virtual")
@@ -104,6 +108,11 @@ public class VendaCompraLojaVirtual implements Serializable {
 	private List<ItemVendaLoja> itemVendaLojas = new ArrayList<ItemVendaLoja>();
 
 	private Boolean excluido = Boolean.FALSE;
+
+	@NotNull(message = "Status da venda ou compra deve ser informado")
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private StatusVendaCompraLojaVirtual statusVendaCompraLojaVirtual;
 
 	public Long getId() {
 		return id;
@@ -231,6 +240,14 @@ public class VendaCompraLojaVirtual implements Serializable {
 
 	public void setExcluido(Boolean excluido) {
 		this.excluido = excluido;
+	}
+
+	public StatusVendaCompraLojaVirtual getStatusVendaCompraLojaVirtual() {
+		return statusVendaCompraLojaVirtual;
+	}
+
+	public void setStatusVendaCompraLojaVirtual(StatusVendaCompraLojaVirtual statusVendaCompraLojaVirtual) {
+		this.statusVendaCompraLojaVirtual = statusVendaCompraLojaVirtual;
 	}
 
 	@Override

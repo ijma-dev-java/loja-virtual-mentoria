@@ -21,6 +21,7 @@ import br.com.loja.virtual.mentoria.model.NotaFiscalCompra;
 import br.com.loja.virtual.mentoria.model.NotaFiscalVenda;
 import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO;
 import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoDTO;
+import br.com.loja.virtual.mentoria.model.dto.StatusVendaCompraLojaVirtualDTO;
 import br.com.loja.virtual.mentoria.repository.NotaFiscalCompraRepository;
 import br.com.loja.virtual.mentoria.repository.NotaFiscalVendaRepository;
 import br.com.loja.virtual.mentoria.service.NotaFiscalCompraService;
@@ -224,6 +225,22 @@ public class NotaFiscalCompraController {
 
 		// Retorno a consulta em uma lista
 		return new ResponseEntity<List<NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO>>(retorno, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@PostMapping(value = "**/buscarRelatorioStatusVendaCompraLojaVirtual")
+	public ResponseEntity<List<StatusVendaCompraLojaVirtualDTO>> buscarRelatorioStatusVendaCompraLojaVirtual(
+			@Valid @RequestBody StatusVendaCompraLojaVirtualDTO statusVendaCompraLojaVirtualDTO) {
+
+		// Instanciando o StatusVendaCompraLojaVirtualDTO
+		List<StatusVendaCompraLojaVirtualDTO> retorno = new ArrayList<StatusVendaCompraLojaVirtualDTO>();
+
+		// Consultando no banco de dados com o nosso service
+		retorno = notaFiscalCompraService.geradorRelatorioStatusVendaCompraLojaVirtual(statusVendaCompraLojaVirtualDTO);
+
+		// Retorno a consulta em uma lista
+		return new ResponseEntity<List<StatusVendaCompraLojaVirtualDTO>>(retorno, HttpStatus.OK);
 
 	}
 

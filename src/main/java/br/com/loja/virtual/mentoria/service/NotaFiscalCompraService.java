@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO;
 import br.com.loja.virtual.mentoria.model.dto.NotaFiscalCompraRelatorioProdutoDTO;
+import br.com.loja.virtual.mentoria.model.dto.StatusVendaCompraLojaVirtualDTO;
 
 @Service
 public class NotaFiscalCompraService {
@@ -104,10 +105,8 @@ public class NotaFiscalCompraService {
 		// Escrevendo SQL
 		String sql = "select pj.id as codigoFornecedor, pj.nome as nomeFornecedor, "
 				+ " nfc.id as codigoNota, nfc.data_compra as dataCompra, "
-				+ " p.id as codigoProduto, p.nome as nomeProduto, "
-				+ " p.valor_venda as valorVendaProduto, "
-				+ " p.qtd_estoque as qtdEstoque, p.qtd_alerta_estoque as qtdAlertaEstoque, "
-				+ " nip.qtd as qtdCompra "
+				+ " p.id as codigoProduto, p.nome as nomeProduto, " + " p.valor_venda as valorVendaProduto, "
+				+ " p.qtd_estoque as qtdEstoque, p.qtd_alerta_estoque as qtdAlertaEstoque, " + " nip.qtd as qtdCompra "
 				+ " from nota_fiscal_compra as nfc "
 				+ " inner join nota_item_produto as nip on nfc.id = nota_fiscal_compra_id "
 				+ " inner join produto as p on p.id = nip.produto_id "
@@ -120,28 +119,107 @@ public class NotaFiscalCompraService {
 
 		// Verificando o codido da nota fiscal d compra do produto
 		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoNota().isEmpty()) {
+
+			// Mostrando para o cliente
 			sql += " and nfc.id = " + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoNota() + " ";
+
 		}
 
+		// Verificadndo o código do produto
 		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoProduto().isEmpty()) {
+
+			// Mostrando para o cliente
 			sql += " and p.id = " + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getCodigoProduto() + " ";
+
 		}
 
+		// Verificadndo o nome do produto
 		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeProduto().isEmpty()) {
+
+			// Mostrando para o cliente
 			sql += " upper(p.nome) like upper('%" + notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeProduto()
 					+ "')";
+
 		}
 
+		// Verificadndo o nome do fornecedor do produto
 		if (!notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeFornecedor().isEmpty()) {
+
+			// Mostrando para o cliente
 			sql += " upper(pj.nome) like upper('%"
 					+ notaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.getNomeFornecedor() + "')";
+
 		}
 
+		// Aprontando no relatório
 		retorno = jdbcTemplate.query(sql,
 				new BeanPropertyRowMapper(NotaFiscalCompraRelatorioProdutoAlertaEstoqueDTO.class));
 
+		// Retorna o relatório em uma lista
 		return retorno;
-		
+
+	}
+
+	public List<StatusVendaCompraLojaVirtualDTO> geradorRelatorioStatusVendaCompraLojaVirtual(
+			StatusVendaCompraLojaVirtualDTO statusVendaCompraLojaVirtualDTO) {
+
+		// Instanciando o StatusVendaCompraLojaVirtualDTO
+		List<StatusVendaCompraLojaVirtualDTO> retorno = new ArrayList<StatusVendaCompraLojaVirtualDTO>();
+
+		// Escrenvendo SQL
+		String sql = "select " + " pf.id as codigoCliente, " + " pf.nome as nomeCliente, "
+				+ " pf.email as emailCliente, " + " pf.telefone as telefoneCliente, " + " p.id as codigoProduto, "
+				+ " p.nome as nomeProduto, " + " p.valor_venda as valorVendaProduto, "
+				+ " p.qtd_estoque as qtdEstoque, " + " vclv.id as codigoVenda, "
+				+ " vclv.status_venda_compra_loja_virtual as statusVendaCompraLojaVirtual "
+				+ " from venda_compra_loja_virtual as vclv "
+				+ " inner join item_venda_loja as ivl on ivl.venda_compra_loja_virtual_id = vclv.id "
+				+ " inner join produto as p on p.id = ivl.produto_id "
+				+ " inner join pessoa_fisica as pf on pf.id = vclv.pessoa_id where ";
+
+		// Continuação do SQL
+		sql += "vclv.data_venda >= '" + statusVendaCompraLojaVirtualDTO.getDataInicial() + "' and vclv.data_venda  <= '"
+				+ statusVendaCompraLojaVirtualDTO.getDataFinal() + "' ";
+
+		// Verificando o nome do produto
+		if (!statusVendaCompraLojaVirtualDTO.getCodigoVenda().isEmpty()) {
+
+			// Mostrando para o cliente
+			sql += " and vclv.id = " + statusVendaCompraLojaVirtualDTO.getCodigoVenda();
+
+		}
+
+		// Verificando o nome do produto
+		if (!statusVendaCompraLojaVirtualDTO.getNomeProduto().isEmpty()) {
+
+			// Mostrando para o cliente
+			sql += " and upper(p.nome) like upper('%" + statusVendaCompraLojaVirtualDTO.getNomeProduto() + "%') ";
+
+		}
+
+		// Verificando o status de venda de compra pela loja virtual
+		if (!statusVendaCompraLojaVirtualDTO.getStatusVendaCompraLojaVirtual().isEmpty()) {
+
+			// Mostrando para o cliente
+			sql += " and vclv.status_venda_compra_loja_virtual in ('"
+					+ statusVendaCompraLojaVirtualDTO.getStatusVendaCompraLojaVirtual() + "') ";
+
+		}
+
+		// Verificando o nome do cliente
+		if (!statusVendaCompraLojaVirtualDTO.getNomeCliente().isEmpty()) {
+
+			// Mostrando para o cliente
+			sql += " and pf.nome like '%" + statusVendaCompraLojaVirtualDTO.getNomeCliente() + "%' ";
+
+		}
+
+		// Aprontando no relatório
+		retorno = jdbcTemplate.query(sql, new BeanPropertyRowMapper(StatusVendaCompraLojaVirtualDTO.class));
+
+		// Retorna o relatório em uma lista
+		return retorno;
+
 	}
 
 }

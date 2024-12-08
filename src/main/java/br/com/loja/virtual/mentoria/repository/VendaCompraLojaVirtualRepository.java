@@ -25,7 +25,7 @@ public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCom
 	// Buscar venda de compra pela loja virtual por nome do produto
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.produto.nome)) like %?1%")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByNomeProduto(String nomeProduto);
-	
+
 	// Buscar venda de compra pela loja virtual por id do cliente
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and i.vendaCompraLojaVirtual.pessoa.id = ?1")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByIdCliente(Long idCliente);
@@ -33,15 +33,15 @@ public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCom
 	// Buscar venda de compra pela loja virtual por nome do cliente
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.vendaCompraLojaVirtual.pessoa.nome)) like %?1%")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByNomeCliente(String nomeClente);
-	
+
 	// Buscar venda de compra pela loja virtual por nome e cpf do cliente
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.vendaCompraLojaVirtual.pessoa.nome)) like %?1% and i.vendaCompraLojaVirtual.pessoa.cpf = ?2")
 	List<VendaCompraLojaVirtual> vendaPorNomeCliente(String nomeClente, String cpf);
-	
+
 	// Buscar venda de compra pela loja virtual por parte do cpf do cliente
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.vendaCompraLojaVirtual.pessoa.cpf)) like %?1%")
 	List<VendaCompraLojaVirtual> vendaPorCpfClienteLike(String cpf);
-	
+
 	// Buscar venda de compra pela loja virtual por cpf válido do cliente
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.vendaCompraLojaVirtual.pessoa.cpf)) = ?1")
 	List<VendaCompraLojaVirtual> vendaPorCpfClienteIgual(String cpf);
@@ -53,10 +53,9 @@ public interface VendaCompraLojaVirtualRepository extends JpaRepository<VendaCom
 	// Buscar venda de compra pela loja virtual por endereço de entrega
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and upper(trim(i.vendaCompraLojaVirtual.enderecoEntrega.logradouro)) like %?1%")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByEnderecoEntrega(String enderecoEntrega);
-	
+
 	// Buscar venda de compra pela loja virtual por faixa de data
 	@Query(value = "select distinct(i.vendaCompraLojaVirtual) from ItemVendaLoja i where i.vendaCompraLojaVirtual.excluido = false and i.vendaCompraLojaVirtual.dataVenda >= ?1 and i.vendaCompraLojaVirtual.dataVenda <= ?2")
 	List<VendaCompraLojaVirtual> buscarVendaCompraLojaVirtualByFaixaData(Date data1, Date data2);
-
 
 }

@@ -25,38 +25,48 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
 
 	@Autowired
 	private ImplementacaoUserDetailsService implementacaoUserDetailsService;
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		
+
 		// Ativando proteção de usuário que não está validado por token
 		http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-		// Desabilita configurações padrão do spring
-		.disable()
-		// Ativar o acesso livre ao contexto principal antes de logar
-		.authorizeRequests().antMatchers("/").permitAll()
-		// Permite acesso a página index para todos
-		.antMatchers("/index").permitAll()
-		// Evitando bloqueio de Cors no navegador para todos
-		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-		
-		// Redireciona ou retorna para a página index quando deslogar
-		.anyRequest().authenticated().and().logout().logoutSuccessUrl("/index")
-		
-		// URL de logout do sistema
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-		
-		// Filtra as requisições para login de JWT - Depois
-		.and().addFilterAfter(new JWTLoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-		
-		// Filtra as requisições para login de JWT - Antes
-		.addFilterBefore(new JWTApiAutenticacaoFilter(), UsernamePasswordAuthenticationFilter.class);
-		
+				// Desabilita configurações padrão do spring
+				.disable()
+				// Ativar o acesso livre ao contexto principal antes de logar
+				.authorizeRequests().antMatchers("/").permitAll()
+				// Permite acesso a página index para todos
+				.antMatchers("/index", "/pagamento/**", "/resources/**", "/static/**", "/templates/**",
+						"/classpath:/static/**", "/classpath:/resources/**", "/classpath:/templates/**")
+				.permitAll()
+				// Evitando bloqueio de GET para todos
+				.antMatchers(HttpMethod.GET, "/**").permitAll()
+				// Evitando bloqueio de POST no navegador para todos
+				.antMatchers(HttpMethod.POST, "/**", "/pagamento/**", "/resources/**", "/static/**", "/templates/**",
+						"/classpath:/static/**", "/classpath:/resources/**", "/classpath:/templates/**")
+				.permitAll()
+				// Evitando bloqueio de Cors no navegador para todos
+				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+				// Redireciona ou retorna para a página index quando deslogar
+				.anyRequest().authenticated().and().logout().logoutSuccessUrl("/index")
+
+				// URL de logout do sistema
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+
+				// Filtra as requisições para login de JWT - Depois
+				.and()
+				.addFilterAfter(new JWTLoginFilter("/login", authenticationManager()),
+						UsernamePasswordAuthenticationFilter.class)
+
+				// Filtra as requisições para login de JWT - Antes
+				.addFilterBefore(new JWTApiAutenticacaoFilter(), UsernamePasswordAuthenticationFilter.class);
+
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		
+
 		// Consultar o usuário no banco com Spring Security
 		auth.userDetailsService(implementacaoUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
 
@@ -66,11 +76,13 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter implements H
 	public void configure(WebSecurity web) throws Exception {
 
 		// Ignorando URL no momento para pular serviço de autenticação
-		/* 
-		web.ignoring().antMatchers(
-			HttpMethod.GET, "/salvarAcesso", "/deleteAcesso").antMatchers(
-			HttpMethod.POST, "/salvarAcesso", "/deleteAcesso");
-		*/
+		web.ignoring()
+				.antMatchers(HttpMethod.GET, "/salvarAcesso", "/deleteAcesso", "/pagamento/**", "/resources/**",
+						"/static/**", "/templates/**", "/classpath:/static/**", "/classpath:/resources/**",
+						"/classpath:/templates/**", "webjars/**", "/WEB-INF/classes/static/**")
+				.antMatchers(HttpMethod.POST, "/salvarAcesso", "/deleteAcesso", "/pagamento/**", "/resources/**",
+						"/static/**", "/templates/**", "/classpath:/static/**", "/classpath:/resources/**",
+						"/classpath:/templates/**", "webjars/**", "/WEB-INF/classes/static/**");
 
 	}
 

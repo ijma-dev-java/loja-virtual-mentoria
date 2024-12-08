@@ -22,13 +22,13 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
-public class HostIgnoringCliente implements Serializable {
+public class HostIgnoringClienteService implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String hostName;
 
-	public HostIgnoringCliente(String hostName) {
+	public HostIgnoringClienteService(String hostName) {
 		
 		this.hostName = hostName;
 		
@@ -64,7 +64,7 @@ public class HostIgnoringCliente implements Serializable {
 		
 		Set<String> hostNameList = new HashSet<String>();
 		hostNameList.add(this.hostName);
-		HttpsURLConnection.setDefaultHostnameVerifier(new IgnoreHostNameSSL(hostNameList));
+		HttpsURLConnection.setDefaultHostnameVerifier(new IgnoreHostNameSSLService(hostNameList));
 
 		HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 

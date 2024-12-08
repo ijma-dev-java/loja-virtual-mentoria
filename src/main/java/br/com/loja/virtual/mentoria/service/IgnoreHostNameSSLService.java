@@ -13,7 +13,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-public class IgnoreHostNameSSL implements HostnameVerifier, Serializable {
+public class IgnoreHostNameSSLService implements HostnameVerifier, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,7 +21,7 @@ public class IgnoreHostNameSSL implements HostnameVerifier, Serializable {
 
 	private Set<String> trustedHosts;
 
-	public IgnoreHostNameSSL(Set<String> trustedHosts) {
+	public IgnoreHostNameSSLService(Set<String> trustedHosts) {
 		this.trustedHosts = trustedHosts;
 	}
 

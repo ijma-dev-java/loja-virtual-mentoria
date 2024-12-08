@@ -13,6 +13,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @SpringBootApplication
 @EnableAsync
@@ -21,12 +25,28 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = { "br.*" })
 @EnableJpaRepositories(basePackages = { "br.com.loja.virtual.mentoria.repository" })
 @EnableTransactionManagement
-public class LojaVirtualMentoriaApplication implements AsyncConfigurer {
+@EnableWebMvc
+public class LojaVirtualMentoriaApplication implements AsyncConfigurer, WebMvcConfigurer {
 
 	public static void main(String[] args) {
 
 		SpringApplication.run(LojaVirtualMentoriaApplication.class, args);
 
+	}
+	
+	@Bean
+	public ViewResolver viewResolver() {
+		
+		// Instanciando o InternalResourceViewResolver
+		InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
+		
+		// Setando os atributos
+		internalResourceViewResolver.setPrefix("classpath:templates/");
+		internalResourceViewResolver.setSuffix(".html");
+		
+		// Retorno
+		return internalResourceViewResolver;
+		
 	}
 
 	@Override

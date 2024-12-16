@@ -27,56 +27,93 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
-		
+
+		// Instanciando o ObjetoErroDTO
 		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
 
+		// Variavel que será usada para mostrar os erros
 		String msg = "";
 
+		// Verificando a classe de exceção
 		if (ex instanceof MethodArgumentNotValidException) {
 
+			// Adicionando todos os erros encontrado numa lista
 			List<ObjectError> list = ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors();
 
+			// Varrendo da lista com os erros
 			for (ObjectError objectError : list) {
+
+				// Adicionando os erros a vaviável de mensagem para
+				// mostrar os erros para mostrar na tela
 				msg += objectError.getDefaultMessage() + "\n";
+
 			}
+
+			// Se for de outra classe
 		} else {
+
+			// Mostrar os erros com mensagem genérica
 			msg = ex.getMessage();
+
 		}
 
+		// Setando os erros
 		objetoErroDTO.setError(msg);
 		objetoErroDTO.setCode(status.value() + " ==> " + status.getReasonPhrase());
 
+		// Mostrando mensagem de erro no console
 		ex.printStackTrace();
 
+		// Retorno o DTO com os erros
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
 
-	/* Captura erro na parte de banco */
+	// Captura erro na parte de banco
 	@ExceptionHandler({ DataIntegrityViolationException.class, ConstraintViolationException.class, SQLException.class })
 	protected ResponseEntity<Object> handleExceptionDataIntegry(Exception ex) {
 
+		// Instanciando o ObjetoErroDTO
 		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
 
+		// Variavel que será usada para mostrar os erros
 		String msg = "";
 
+		// Verificando a classe de exceção
 		if (ex instanceof DataIntegrityViolationException) {
+
+			// Mostrar mensagem de erro
 			msg = "Erro de integridade no banco: "
 					+ ((DataIntegrityViolationException) ex).getCause().getCause().getMessage();
+
+			// Verificando a classe de exceção
 		} else if (ex instanceof ConstraintViolationException) {
+
+			// Mostrar mensagem de erro
 			msg = "Erro de chave estrangeira: "
 					+ ((ConstraintViolationException) ex).getCause().getCause().getMessage();
+
+			// Verificando a classe de exceção
 		} else if (ex instanceof SQLException) {
+
+			// Mostrar mensagem de erro
 			msg = "Erro de SQL do Banco: " + ((SQLException) ex).getCause().getCause().getMessage();
+
 		} else {
+
+			// Mostrar os erros com mensagem genérica
 			msg = ex.getMessage();
+
 		}
 
+		// Setando os erros
 		objetoErroDTO.setError(msg);
 		objetoErroDTO.setCode(HttpStatus.INTERNAL_SERVER_ERROR.toString());
 
+		// Mostrando mensagem de erro no console
 		ex.printStackTrace();
 
+		// Retorno o DTO com os erros
 		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}

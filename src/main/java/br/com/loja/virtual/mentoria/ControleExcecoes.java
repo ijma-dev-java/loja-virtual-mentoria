@@ -22,6 +22,20 @@ import br.com.loja.virtual.mentoria.model.dto.ObjetoErroDTO;
 @ControllerAdvice
 public class ControleExcecoes extends ResponseEntityExceptionHandler {
 
+	@ExceptionHandler(LojaVirtualMentoriaException.class)
+	public ResponseEntity<Object> handleExceptionCustom(LojaVirtualMentoriaException ex) {
+
+		// Instanciando o ObjetoErroDTO
+		ObjetoErroDTO objetoErroDTO = new ObjetoErroDTO();
+
+		// Setando os erros
+		objetoErroDTO.setError(ex.getMessage());
+		objetoErroDTO.setCode(HttpStatus.OK.toString());
+
+		// Retorno o DTO com os erros
+		return new ResponseEntity<Object>(objetoErroDTO, HttpStatus.OK);
+	}
+
 	// Captura execeções do projeto
 	@ExceptionHandler({ Exception.class, RuntimeException.class, Throwable.class })
 	@Override

@@ -25,7 +25,7 @@ public class ItemVendaLoja implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_venda_loja_seq")
 	private Long id;
-	
+
 	@Column(nullable = false)
 	private Double qtd;
 
@@ -36,6 +36,10 @@ public class ItemVendaLoja implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "venda_compra_loja_virtual_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "venda_compra_loja_virtual_fk"))
 	private VendaCompraLojaVirtual vendaCompraLojaVirtual;
+
+	@ManyToOne(targetEntity = Pessoa.class)
+	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
+	private Pessoa empresa;
 
 	public Long getId() {
 		return id;
@@ -69,8 +73,12 @@ public class ItemVendaLoja implements Serializable {
 		this.vendaCompraLojaVirtual = vendaCompraLojaVirtual;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Pessoa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Pessoa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

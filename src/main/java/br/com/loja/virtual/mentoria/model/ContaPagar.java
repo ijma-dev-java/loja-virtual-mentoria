@@ -57,6 +57,10 @@ public class ContaPagar implements Serializable {
 	@JoinColumn(name = "pessoa_fornecedor_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "pessoa_fornecedor_fk"))
 	private Pessoa pessoaFornecedor;
 
+	@ManyToOne(targetEntity = Pessoa.class)
+	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
+	private Pessoa empresa;
+
 	public Long getId() {
 		return id;
 	}
@@ -127,6 +131,14 @@ public class ContaPagar implements Serializable {
 
 	public void setPessoaFornecedor(Pessoa pessoaFornecedor) {
 		this.pessoaFornecedor = pessoaFornecedor;
+	}
+
+	public Pessoa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Pessoa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

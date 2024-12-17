@@ -6,10 +6,14 @@ import java.util.Date;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,17 +29,21 @@ public class CupomDesconto implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cupom_desconto_seq")
 	private Long id;
-	
+
 	@Column(nullable = false)
 	private String codDesconto;
 
 	private BigDecimal valorRealDesconto;
 
 	private BigDecimal valorPorcentagemDesconto;
-	
+
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataValidadeCupomDesconto;
+
+	@ManyToOne(targetEntity = Pessoa.class)
+	@JoinColumn(name = "empresa_id", nullable = false, foreignKey = @ForeignKey(value = ConstraintMode.CONSTRAINT, name = "empresa_fk"))
+	private Pessoa empresa;
 
 	public Long getId() {
 		return id;
@@ -75,6 +83,14 @@ public class CupomDesconto implements Serializable {
 
 	public void setDataValidadeCupomDesconto(Date dataValidadeCupomDesconto) {
 		this.dataValidadeCupomDesconto = dataValidadeCupomDesconto;
+	}
+
+	public Pessoa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Pessoa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

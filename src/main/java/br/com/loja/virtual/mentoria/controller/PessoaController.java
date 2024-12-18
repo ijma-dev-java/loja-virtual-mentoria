@@ -46,6 +46,17 @@ public class PessoaController {
 
 		}
 
+		// Verificando se o id da pessoa jurifica está nulo
+		// e se existe IE cadastro com o mesmo número
+		if (pessoaJuridica.getId() == null
+				&& pessoaJuridicaRepository.existeInscEstadualCadastrado(pessoaJuridica.getInscEstadual()) != null) {
+
+			// Mostra mensagem
+			throw new LojaVirtualMentoriaException(
+					"Já existe IE cadastrado com o número: " + pessoaJuridica.getInscEstadual());
+
+		}
+
 		// Invoca o PessoaUsuarioService para salvar no banco de dados
 		pessoaJuridica = pessoaUsuarioService.salvarPessoaJuridica(pessoaJuridica);
 

@@ -11,8 +11,12 @@ import br.com.loja.virtual.mentoria.model.PessoaJuridica;
 @Transactional
 public interface PessoaJuridicaRepository extends JpaRepository<PessoaJuridica, Long> {
 	
-	// Consultando CNPJ pelo número do mesmo
+	// Buscar CNPJ
 	@Query(value = "select pj from PessoaJuridica pj where pj.cnpj = ?1")
 	public PessoaJuridica existeCnpjCadastrado(String cnpj);
+	
+	// Buscar inscrição estadual 
+	@Query(value = "select pj from PessoaJuridica pj where pj.inscEstadual = ?1")
+	public PessoaJuridica existeInscEstadualCadastrado(String inscEstadual);
 
 }

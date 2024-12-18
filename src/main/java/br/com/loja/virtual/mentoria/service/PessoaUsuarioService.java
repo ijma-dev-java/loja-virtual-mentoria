@@ -80,6 +80,9 @@ public class PessoaUsuarioService {
 
 			// Adicionar o acesso de usuario padrão (ROLE_USER)
 			usuarioRepository.insereAcessoUserPj(usuarioPj.getId());
+			
+			// Adicionar o acesso de usuario padrão (ROLE_ADMIN)
+			usuarioRepository.insereAcessoUserPj(usuarioPj.getId(), "ROLE_ADMIN");
 
 			// Instanciando o StringBuilder para escrever o e-mail em HTML
 			StringBuilder menssagemHtml = new StringBuilder();

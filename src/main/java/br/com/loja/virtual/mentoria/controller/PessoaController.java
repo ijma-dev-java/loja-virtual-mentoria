@@ -23,6 +23,7 @@ import br.com.loja.virtual.mentoria.repository.EnderecoRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.service.PessoaUsuarioService;
+import br.com.loja.virtual.mentoria.service.ServiceContagemAcessoApi;
 import br.com.loja.virtual.mentoria.util.ValidaCNPJ;
 import br.com.loja.virtual.mentoria.util.ValidaCPF;
 
@@ -40,6 +41,9 @@ public class PessoaController {
 
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	private ServiceContagemAcessoApi serviceContagemAcessoApi;
 
 	@ResponseBody
 	@GetMapping(value = "consultaPfNome/{nome}")
@@ -71,6 +75,9 @@ public class PessoaController {
 
 		// Buscar no banco de dados
 		List<PessoaJuridica> fisicas = pessoaJuridicaRepository.pesquisaPorNomePJ(nome.trim().toUpperCase());
+
+		// Executa o serviço de contagem de acesso a API
+		serviceContagemAcessoApi.atualizaEndPointConsultaNomePJ();
 
 		// Retorno do objeto
 		return new ResponseEntity<List<PessoaJuridica>>(fisicas, HttpStatus.OK);

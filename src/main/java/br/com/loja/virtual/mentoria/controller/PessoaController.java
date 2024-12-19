@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
+import br.com.loja.virtual.mentoria.enums.TipoPessoa;
 import br.com.loja.virtual.mentoria.model.Endereco;
 import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
 import br.com.loja.virtual.mentoria.model.dto.CepDTO;
+import br.com.loja.virtual.mentoria.model.dto.ConsultaCnpjDTO;
 import br.com.loja.virtual.mentoria.repository.EnderecoRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
@@ -41,7 +43,7 @@ public class PessoaController {
 
 	@Autowired
 	private EnderecoRepository enderecoRepository;
-	
+
 	@Autowired
 	private ServiceContagemAcessoApi serviceContagemAcessoApi;
 
@@ -97,6 +99,15 @@ public class PessoaController {
 	}
 
 	@ResponseBody
+	@GetMapping(value = "consultaCnpjReceitaWs/{cnpj}")
+	public ResponseEntity<ConsultaCnpjDTO> consultaCnpjReceitaWs(@PathVariable("cnpj") String cnpj) {
+
+		// Retorno do objeto
+		return new ResponseEntity<ConsultaCnpjDTO>(pessoaUsuarioService.consultaCnpjReceitaWS(cnpj), HttpStatus.OK);
+
+	}
+
+	@ResponseBody
 	@GetMapping(value = "consultaCep/{cep}")
 	public ResponseEntity<CepDTO> consultaCep(@PathVariable("cep") String cep) {
 
@@ -130,6 +141,14 @@ public class PessoaController {
 
 		}
 
+		// Verificando se o tipo da pessoa está nulo
+		if (pessoaJuridica.getTipoPessoa() == null) {
+
+			// Mostra mensagem
+			throw new LojaVirtualMentoriaException("Informe o tipo Jurídico ou Fornecedor da Loja");
+
+		}
+
 		// Verificando se o id da pessoa jurifica está nulo
 		// e se existe CNPJ cadastro com o mesmo número
 		if (pessoaJuridica.getId() == null
@@ -143,7 +162,10 @@ public class PessoaController {
 
 		// Verificando se o CPNJ é valido
 		if (!ValidaCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
+
+			// Mostra mensagem
 			throw new LojaVirtualMentoriaException("CNPJ : " + pessoaJuridica.getCnpj() + " está inválido.");
+
 		}
 
 		// Verificando se o id da pessoa jurifica está nulo
@@ -216,11 +238,19 @@ public class PessoaController {
 	public ResponseEntity<PessoaFisica> salvarPf(@RequestBody PessoaFisica pessoaFisica)
 			throws LojaVirtualMentoriaException {
 
-		// Verificando se a pessoa jurifica está nulo
+		// Verificando se a pessoa fisica está nulo
 		if (pessoaFisica == null) {
 
 			// Mostra mensagem
 			throw new LojaVirtualMentoriaException("Pessoa física não pode ser NULL");
+
+		}
+
+		// Verificando se tipo da pessoa fisica está nulo
+		if (pessoaFisica.getTipoPessoa() == null) {
+
+			// Setando tipo de pessoa fisica por padrão
+			pessoaFisica.setTipoPessoa(TipoPessoa.FISICA.name());
 
 		}
 

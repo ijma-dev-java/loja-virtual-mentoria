@@ -5,14 +5,19 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
+import br.com.loja.virtual.mentoria.model.Endereco;
 import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
+import br.com.loja.virtual.mentoria.model.dto.CepDTO;
+import br.com.loja.virtual.mentoria.repository.EnderecoRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.service.PessoaUsuarioService;
@@ -31,6 +36,18 @@ public class PessoaController {
 	@Autowired
 	private PessoaUsuarioService pessoaUsuarioService;
 
+	@Autowired
+	private EnderecoRepository enderecoRepository;
+
+	@ResponseBody
+	@GetMapping(value = "consultaCep/{cep}")
+	public ResponseEntity<CepDTO> consultaCep(@PathVariable("cep") String cep) {
+
+		// Retorna os dados consultados
+		return new ResponseEntity<CepDTO>(pessoaUsuarioService.consultaCep(cep), HttpStatus.OK);
+
+	}
+
 	@ResponseBody
 	@PostMapping(value = "salvarPj")
 	public ResponseEntity<PessoaJuridica> salvarPj(@RequestBody @Valid PessoaJuridica pessoaJuridica)
@@ -39,13 +56,14 @@ public class PessoaController {
 		// Utilizado em sistemas antigos
 		// Verificando se o nome está null ou vazio
 		/*
-		if (pessoaJuridica.getNome() == null || pessoaJuridica.getNome().trim().isEmpty()) {
-
-			// Mostra mensagem
-			throw new LojaVirtualMentoriaException("Nome da empresa deve ser informado");
-
-		}
-		*/
+		 * if (pessoaJuridica.getNome() == null ||
+		 * pessoaJuridica.getNome().trim().isEmpty()) {
+		 * 
+		 * // Mostra mensagem throw new
+		 * LojaVirtualMentoriaException("Nome da empresa deve ser informado");
+		 * 
+		 * }
+		 */
 
 		// Verificando se a pessoa jurifica está nulo
 		if (pessoaJuridica == null) {
@@ -79,6 +97,52 @@ public class PessoaController {
 			// Mostra mensagem
 			throw new LojaVirtualMentoriaException(
 					"Já existe IE cadastrado com o número: " + pessoaJuridica.getInscEstadual());
+
+		}
+
+		// Verificando se a pessoa está nulo ou com id menor que zero
+		if (pessoaJuridica.getId() == null || pessoaJuridica.getId() <= 0) {
+
+			// Varrendo a lista de endereço
+			for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
+
+				// Consultando endereço completo com o CEP
+				CepDTO cepDTO = pessoaUsuarioService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+
+				// Setando os atributos
+				pessoaJuridica.getEnderecos().get(p).setRua(cepDTO.getLogradouro());
+				pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
+				pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
+				pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
+				pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+
+			}
+
+			// Caso contrário
+		} else {
+
+			// Varrendo a lista de endereço
+			for (int p = 0; p < pessoaJuridica.getEnderecos().size(); p++) {
+
+				// Buscar no banco de dados os endereços da pessoa
+				Endereco enderecoTemp = enderecoRepository.findById(pessoaJuridica.getEnderecos().get(p).getId()).get();
+
+				// Verificando se o endereço do banco é diferente do que está vindo da tela
+				if (!enderecoTemp.getCep().equals(pessoaJuridica.getEnderecos().get(p).getCep())) {
+
+					// Consultando endereço completo com o CEP
+					CepDTO cepDTO = pessoaUsuarioService.consultaCep(pessoaJuridica.getEnderecos().get(p).getCep());
+
+					// Setando os atributos
+					pessoaJuridica.getEnderecos().get(p).setRua(cepDTO.getLogradouro());
+					pessoaJuridica.getEnderecos().get(p).setComplemento(cepDTO.getComplemento());
+					pessoaJuridica.getEnderecos().get(p).setBairro(cepDTO.getBairro());
+					pessoaJuridica.getEnderecos().get(p).setCidade(cepDTO.getLocalidade());
+					pessoaJuridica.getEnderecos().get(p).setUf(cepDTO.getUf());
+
+				}
+
+			}
 
 		}
 

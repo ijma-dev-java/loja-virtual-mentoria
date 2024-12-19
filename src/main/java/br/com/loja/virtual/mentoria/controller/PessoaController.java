@@ -9,15 +9,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.loja.virtual.mentoria.LojaVirtualMentoriaException;
+import br.com.loja.virtual.mentoria.model.PessoaFisica;
 import br.com.loja.virtual.mentoria.model.PessoaJuridica;
+import br.com.loja.virtual.mentoria.repository.PessoaFisicaRepository;
 import br.com.loja.virtual.mentoria.repository.PessoaJuridicaRepository;
 import br.com.loja.virtual.mentoria.service.PessoaUsuarioService;
+import br.com.loja.virtual.mentoria.util.ValidaCNPJ;
+import br.com.loja.virtual.mentoria.util.ValidaCPF;
 
 @RestController
 public class PessoaController {
 
 	@Autowired
 	private PessoaJuridicaRepository pessoaJuridicaRepository;
+
+	@Autowired
+	private PessoaFisicaRepository pessoaFisicaRepository;
 
 	@Autowired
 	private PessoaUsuarioService pessoaUsuarioService;
@@ -46,6 +53,11 @@ public class PessoaController {
 
 		}
 
+		// Verificando se o CPNJ é valido
+		if (!ValidaCNPJ.isCNPJ(pessoaJuridica.getCnpj())) {
+			throw new LojaVirtualMentoriaException("CNPJ : " + pessoaJuridica.getCnpj() + " está inválido.");
+		}
+
 		// Verificando se o id da pessoa jurifica está nulo
 		// e se existe IE cadastro com o mesmo número
 		if (pessoaJuridica.getId() == null
@@ -62,6 +74,41 @@ public class PessoaController {
 
 		// Retorna o pessoa juridica salvo
 		return new ResponseEntity<PessoaJuridica>(pessoaJuridica, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@PostMapping(value = "salvarPf")
+	public ResponseEntity<PessoaFisica> salvarPf(@RequestBody PessoaFisica pessoaFisica)
+			throws LojaVirtualMentoriaException {
+
+		// Verificando se a pessoa jurifica está nulo
+		if (pessoaFisica == null) {
+
+			// Mostra mensagem
+			throw new LojaVirtualMentoriaException("Pessoa física não pode ser NULL");
+
+		}
+
+		// Verificando se o id da pessoa fisica está nulo
+		// e se existe CPF cadastro com o mesmo número
+		if (pessoaFisica.getId() == null && pessoaFisicaRepository.existeCpfCadastrado(pessoaFisica.getCpf()) != null) {
+
+			// Mostra mensagem
+			throw new LojaVirtualMentoriaException("Já existe CPF cadastrado com o número: " + pessoaFisica.getCpf());
+
+		}
+
+		// Verificando se o CPF é valido
+		if (!ValidaCPF.isCPF(pessoaFisica.getCpf())) {
+			throw new LojaVirtualMentoriaException("CPF : " + pessoaFisica.getCpf() + " está inválido.");
+		}
+
+		// Invoca o PessoaUsuarioService para salvar no banco de dados
+		pessoaFisica = pessoaUsuarioService.salvarPessoaFisica(pessoaFisica);
+
+		// Retorna o pessoa juridica salvo
+		return new ResponseEntity<PessoaFisica>(pessoaFisica, HttpStatus.OK);
 
 	}
 

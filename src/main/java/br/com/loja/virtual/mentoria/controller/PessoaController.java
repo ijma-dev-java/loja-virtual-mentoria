@@ -1,5 +1,7 @@
 package br.com.loja.virtual.mentoria.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,54 @@ public class PessoaController {
 
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+
+	@ResponseBody
+	@GetMapping(value = "consultaPfNome/{nome}")
+	public ResponseEntity<List<PessoaFisica>> consultaPfNome(@PathVariable("nome") String nome) {
+
+		// Buscar no banco de dados
+		List<PessoaFisica> pessoaFisicas = pessoaFisicaRepository.pesquisaPorNomePF(nome.trim().toUpperCase());
+
+		// Retorno do objeto
+		return new ResponseEntity<List<PessoaFisica>>(pessoaFisicas, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "consultaPfCpf/{cpf}")
+	public ResponseEntity<List<PessoaFisica>> consultaPfCpf(@PathVariable("cpf") String cpf) {
+
+		// Buscar no banco de dados
+		List<PessoaFisica> fisicas = pessoaFisicaRepository.existeCpfCadastradoList(cpf);
+
+		// Retorno do objeto
+		return new ResponseEntity<List<PessoaFisica>>(fisicas, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "consultaNomePJ/{nome}")
+	public ResponseEntity<List<PessoaJuridica>> consultaNomePJ(@PathVariable("nome") String nome) {
+
+		// Buscar no banco de dados
+		List<PessoaJuridica> fisicas = pessoaJuridicaRepository.pesquisaPorNomePJ(nome.trim().toUpperCase());
+
+		// Retorno do objeto
+		return new ResponseEntity<List<PessoaJuridica>>(fisicas, HttpStatus.OK);
+
+	}
+
+	@ResponseBody
+	@GetMapping(value = "consultaCnpjPJ/{cnpj}")
+	public ResponseEntity<List<PessoaJuridica>> consultaCnpjPJ(@PathVariable("cnpj") String cnpj) {
+
+		// Buscar no banco de dados
+		List<PessoaJuridica> fisicas = pessoaJuridicaRepository.existeCnpjCadastradoList(cnpj.trim().toUpperCase());
+
+		// Retorno do objeto
+		return new ResponseEntity<List<PessoaJuridica>>(fisicas, HttpStatus.OK);
+
+	}
 
 	@ResponseBody
 	@GetMapping(value = "consultaCep/{cep}")

@@ -1,5 +1,7 @@
 package br.com.loja.virtual.mentoria.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +33,19 @@ public class PessoaController {
 
 	@ResponseBody
 	@PostMapping(value = "salvarPj")
-	public ResponseEntity<PessoaJuridica> salvarPj(@RequestBody PessoaJuridica pessoaJuridica)
+	public ResponseEntity<PessoaJuridica> salvarPj(@RequestBody @Valid PessoaJuridica pessoaJuridica)
 			throws LojaVirtualMentoriaException {
+
+		// Utilizado em sistemas antigos
+		// Verificando se o nome está null ou vazio
+		/*
+		if (pessoaJuridica.getNome() == null || pessoaJuridica.getNome().trim().isEmpty()) {
+
+			// Mostra mensagem
+			throw new LojaVirtualMentoriaException("Nome da empresa deve ser informado");
+
+		}
+		*/
 
 		// Verificando se a pessoa jurifica está nulo
 		if (pessoaJuridica == null) {
